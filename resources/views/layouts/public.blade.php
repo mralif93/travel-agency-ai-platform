@@ -16,6 +16,9 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
     <script>
         // Check local storage or system preference
         if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
@@ -46,41 +49,132 @@
             background: radial-gradient(circle at center, rgba(99, 102, 241, 0.15) 0%, rgba(17, 24, 39, 0) 70%);
         }
 
-        /* Mobile menu transition */
-        .mobile-menu {
-            transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
-            max-height: 0;
-            opacity: 0;
-            overflow: hidden;
-        }
-
-        .mobile-menu.open {
-            max-height: 400px;
-            opacity: 1;
+        [x-cloak] {
+            display: none !important;
         }
     </style>
 </head>
 
 <body
-    class="antialiased text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-900 selection:bg-indigo-500 selection:text-white overflow-x-hidden flex flex-col min-h-screen transition-colors duration-300">
+    class="antialiased text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-900 selection:bg-indigo-500 selection:text-white overflow-x-hidden flex flex-col min-h-screen transition-colors duration-300"
+    x-data="{ mobileMenuOpen: false, scrolled: false }" @scroll.window="scrolled = (window.pageYOffset > 20)">
 
     <!-- Navbar -->
-    <nav class="fixed w-full z-50 glass-nav transition-all duration-300">
+    <nav class="fixed w-full z-50 transition-all duration-300"
+        :class="{ 'glass-nav': scrolled, 'bg-transparent': !scrolled }">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-20">
-                <a href="{{ url('/') }}" class="flex-shrink-0 flex items-center gap-2 group">
-                    <div
-                        class="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/20 group-hover:scale-105 transition-transform duration-200">
-                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
-                            </path>
-                        </svg>
+                <div class="flex items-center gap-8">
+                    <a href="{{ url('/') }}" class="flex-shrink-0 flex items-center gap-2 group">
+                        <div
+                            class="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/20 group-hover:scale-105 transition-transform duration-200">
+                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
+                                </path>
+                            </svg>
+                        </div>
+                        <span
+                            class="font-bold text-xl tracking-tight text-gray-900 dark:text-white transition-colors">Travel<span
+                                class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-purple-500 dark:from-indigo-400 dark:to-purple-400">AI</span></span>
+                    </a>
+
+                    <!-- Desktop Nav -->
+                    <div class="hidden md:flex items-center gap-6">
+                        <!-- Services Dropdown -->
+                        <div class="relative" x-data="{ open: false }" @mouseenter="open = true"
+                            @mouseleave="open = false">
+                            <button
+                                class="flex items-center gap-1 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-white transition-colors focus:outline-none">
+                                Services
+                                <svg class="w-4 h-4 transition-transform duration-200" :class="{ 'rotate-180': open }"
+                                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </button>
+
+                            <div x-show="open" x-transition:enter="transition ease-out duration-200"
+                                x-transition:enter-start="opacity-0 translate-y-1"
+                                x-transition:enter-end="opacity-100 translate-y-0"
+                                x-transition:leave="transition ease-in duration-150"
+                                x-transition:leave-start="opacity-100 translate-y-0"
+                                x-transition:leave-end="opacity-0 translate-y-1"
+                                class="absolute left-0 mt-2 w-72 rounded-2xl bg-white dark:bg-gray-800 shadow-xl ring-1 ring-black/5 dark:ring-white/10 focus:outline-none overflow-hidden backdrop-blur-xl"
+                                x-cloak>
+                                <div class="p-2 space-y-1">
+                                    <a href="{{ route('transport-rates') }}"
+                                        class="flex items-start gap-3 p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors group">
+                                        <div
+                                            class="flex-shrink-0 w-10 h-10 rounded-lg bg-indigo-50 dark:bg-indigo-900/30 flex items-center justify-center text-indigo-600 dark:text-indigo-400 group-hover:scale-110 transition-transform duration-200">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z">
+                                                </path>
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 10-4 0 2 2 0 004 0zm10 0a2 2 0 10-4 0 2 2 0 004 0z">
+                                                </path>
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <div
+                                                class="font-semibold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                                                Transport Rates</div>
+                                            <div class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Check fares &
+                                                book
+                                                rides instantly</div>
+                                        </div>
+                                    </a>
+
+                                    <a href="{{ route('tour-packages') }}"
+                                        class="flex items-start gap-3 p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors group">
+                                        <div
+                                            class="flex-shrink-0 w-10 h-10 rounded-lg bg-purple-50 dark:bg-purple-900/30 flex items-center justify-center text-purple-600 dark:text-purple-400 group-hover:scale-110 transition-transform duration-200">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
+                                                </path>
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <div
+                                                class="font-semibold text-gray-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
+                                                Tour Packages</div>
+                                            <div class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Curated
+                                                experiences for you</div>
+                                        </div>
+                                    </a>
+
+                                    <a href="{{ route('attractions') }}"
+                                        class="flex items-start gap-3 p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors group">
+                                        <div
+                                            class="flex-shrink-0 w-10 h-10 rounded-lg bg-pink-50 dark:bg-pink-900/30 flex items-center justify-center text-pink-600 dark:text-pink-400 group-hover:scale-110 transition-transform duration-200">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
+                                                </path>
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <div
+                                                class="font-semibold text-gray-900 dark:text-white group-hover:text-pink-600 dark:group-hover:text-pink-400 transition-colors">
+                                                Attractions</div>
+                                            <div class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Explore popular
+                                                destinations</div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <a href="{{ route('about') }}"
+                            class="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-white transition-colors">About</a>
+                        <a href="{{ route('contact') }}"
+                            class="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-white transition-colors">Contact</a>
                     </div>
-                    <span
-                        class="font-bold text-xl tracking-tight text-gray-900 dark:text-white transition-colors">Travel<span
-                            class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-purple-500 dark:from-indigo-400 dark:to-purple-400">AI</span></span>
-                </a>
+                </div>
 
                 <div class="flex items-center gap-4">
                     <!-- Theme Toggle -->
@@ -102,8 +196,8 @@
                         </svg>
                     </button>
 
-                    @if (Route::has('login'))
-                        <div class="hidden sm:block">
+                    <div class="hidden sm:flex items-center gap-4">
+                        @if (Route::has('login'))
                             @auth
                                 <a href="{{ url('/dashboard') }}"
                                     class="font-semibold text-gray-700 hover:text-indigo-600 dark:text-gray-300 dark:hover:text-white transition-colors">Dashboard</a>
@@ -113,9 +207,66 @@
                                     Log in
                                 </a>
                             @endauth
-                        </div>
-                    @endif
+                        @endif
+                    </div>
+
+                    <!-- Mobile Menu Button -->
+                    <button @click="mobileMenuOpen = !mobileMenuOpen" type="button"
+                        class="sm:hidden p-2 rounded-xl text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        aria-controls="mobile-menu" :aria-expanded="mobileMenuOpen">
+                        <span class="sr-only">Open main menu</span>
+                        <svg class="h-6 w-6" :class="{ 'hidden': mobileMenuOpen, 'block': !mobileMenuOpen }" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                        <svg class="h-6 w-6" :class="{ 'block': mobileMenuOpen, 'hidden': !mobileMenuOpen }" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor" x-cloak>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
                 </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div class="sm:hidden glass-nav border-t border-gray-200 dark:border-gray-800" id="mobile-menu"
+            x-show="mobileMenuOpen" x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0"
+            x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 translate-y-0"
+            x-transition:leave-end="opacity-0 -translate-y-2" x-cloak>
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <div class="px-3 py-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">Services</div>
+                <a href="{{ route('transport-rates') }}"
+                    class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-200 hover:text-indigo-600 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800">Transport
+                    Rates</a>
+                <a href="{{ route('tour-packages') }}"
+                    class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-200 hover:text-indigo-600 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800">Tour
+                    Packages</a>
+                <a href="{{ route('attractions') }}"
+                    class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-200 hover:text-indigo-600 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800">Attractions</a>
+
+                <div class="border-t border-gray-100 dark:border-gray-700 my-2"></div>
+
+                <a href="{{ route('about') }}"
+                    class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-200 hover:text-indigo-600 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800">About</a>
+                <a href="{{ route('contact') }}"
+                    class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-200 hover:text-indigo-600 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800">Contact</a>
+
+                <div class="border-t border-gray-100 dark:border-gray-700 my-2"></div>
+
+                @if (Route::has('login'))
+                    @auth
+                        <a href="{{ url('/dashboard') }}"
+                            class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-200 hover:text-indigo-600 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800">Dashboard</a>
+                    @else
+                        <a href="{{ route('login') }}"
+                            class="block w-full text-center mt-4 px-5 py-3 rounded-xl font-medium text-white bg-indigo-600 hover:bg-indigo-700 shadow-md">
+                            Log in
+                        </a>
+                    @endauth
+                @endif
             </div>
         </div>
     </nav>
@@ -172,7 +323,7 @@
                 } else {
                     document.documentElement.classList.add('dark');
                     localStorage.setItem('theme', 'dark');
-                }
+     }
             }
 
         });
