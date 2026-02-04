@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicController;
 
 Route::get('/', function () {
@@ -27,8 +28,31 @@ Route::middleware('guest')->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::post('logout', [AuthController::class, 'logout'])->name('logout');
+
+    // Default Dashboard
     Route::get('dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
+
+    // Role-based Dashboards
+    Route::get('dashboard/superadmin', function () {
+        return view('dashboard.superadmin');
+    })->name('dashboard.superadmin');
+
+    Route::get('dashboard/admin', function () {
+        return view('dashboard.admin');
+    })->name('dashboard.admin');
+
+    Route::get('dashboard/driver', function () {
+        return view('dashboard.driver');
+    })->name('dashboard.driver');
+
+    Route::get('dashboard/company', function () {
+        return view('dashboard.company');
+    })->name('dashboard.company');
+
+    // Profile
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
 });
 
