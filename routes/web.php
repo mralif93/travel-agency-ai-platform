@@ -22,6 +22,7 @@ Route::controller(PublicController::class)->group(function () {
 Route::middleware('guest')->group(function () {
     Route::get('login', [AuthController::class, 'showLogin'])->name('login');
     Route::post('login', [AuthController::class, 'login']);
+    Route::get('forgot-password', [AuthController::class, 'showLinkRequestForm'])->name('password.request');
 });
 
 Route::middleware('auth')->group(function () {

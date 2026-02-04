@@ -41,4 +41,9 @@ class AuthController extends Controller
 
         return redirect('/');
     }
+
+    public function showLinkRequestForm()
+    {
+        return view('auth.forgot-password');
+    }
 }
