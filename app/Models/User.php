@@ -22,6 +22,8 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'theme_mode',
+        'theme_color',
     ];
 
     /**
@@ -45,5 +47,10 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function vehicle(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(Vehicle::class);
     }
 }

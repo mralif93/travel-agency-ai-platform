@@ -14,35 +14,63 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         // Super Admin
-        User::create([
-            'name' => 'Super Admin',
-            'email' => 'superadmin@example.com',
-            'password' => Hash::make('password'),
-            'role' => 'superadmin',
-        ]);
+        User::firstOrCreate(
+            ['email' => 'superadmin@example.com'],
+            [
+                'name' => 'Super Admin',
+                'password' => Hash::make('password'),
+                'role' => 'superadmin',
+                'theme_color' => 'primary',
+            ]
+        );
 
         // Admin
-        User::create([
-            'name' => 'Admin',
-            'email' => 'admin@example.com',
-            'password' => Hash::make('password'),
-            'role' => 'admin',
-        ]);
+        User::firstOrCreate(
+            ['email' => 'admin@example.com'],
+            [
+                'name' => 'Admin',
+                'password' => Hash::make('password'),
+                'role' => 'admin',
+                'theme_color' => 'primary',
+            ]
+        );
 
         // Driver
-        User::create([
-            'name' => 'Driver User',
-            'email' => 'driver@example.com',
-            'password' => Hash::make('password'),
-            'role' => 'driver',
-        ]);
+        User::firstOrCreate(
+            ['email' => 'driver@example.com'],
+            [
+                'name' => 'Driver User',
+                'password' => Hash::make('password'),
+                'role' => 'driver',
+                'theme_color' => 'primary',
+            ]
+        );
+
+        // Create 10 more drivers
+        for ($i = 1; $i <= 10; $i++) {
+            User::firstOrCreate(
+                ['email' => "driver{$i}@example.com"],
+                [
+                    'name' => "Driver {$i}",
+                    'password' => Hash::make('password'),
+                    'role' => 'driver',
+                    'theme_color' => 'primary',
+                ]
+            );
+        }
 
         // Company
-        User::create([
-            'name' => 'Company User',
-            'email' => 'company@example.com',
-            'password' => Hash::make('password'),
-            'role' => 'company',
-        ]);
+        User::firstOrCreate(
+            ['email' => 'company@example.com'],
+            [
+                'name' => 'Company User',
+                'password' => Hash::make('password'),
+                'role' => 'company',
+                'theme_color' => 'primary',
+            ]
+        );
+
+        // Generate 50 random users
+        User::factory(50)->create();
     }
 }

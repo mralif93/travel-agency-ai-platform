@@ -7,7 +7,7 @@
         </div>
         <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
             <button type="button"
-                class="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Export
+                class="block rounded-md bg-primary-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-primary-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600">Export
                 Report</button>
         </div>
     </div>
@@ -70,7 +70,7 @@
                         <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 dark:text-gray-400">2 mins ago</td>
                         <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                             <a href="#"
-                                class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300">View<span
+                                class="text-primary-600 hover:text-primary-900 dark:text-primary-400 dark:hover:text-primary-300">View<span
                                     class="sr-only">, Admin User</span></a>
                         </td>
                     </tr>
@@ -89,7 +89,7 @@
                         </td>
                         <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                             <a href="#"
-                                class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300">View<span
+                                class="text-primary-600 hover:text-primary-900 dark:text-primary-400 dark:hover:text-primary-300">View<span
                                     class="sr-only">, Driver #42</span></a>
                         </td>
                     </tr>
@@ -108,7 +108,7 @@
                         </td>
                         <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                             <a href="#"
-                                class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300">View<span
+                                class="text-primary-600 hover:text-primary-900 dark:text-primary-400 dark:hover:text-primary-300">View<span
                                     class="sr-only">, Sarah Smith</span></a>
                         </td>
                     </tr>

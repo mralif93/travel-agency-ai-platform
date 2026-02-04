@@ -37,12 +37,10 @@
             background: rgba(255, 255, 255, 0.8);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
         }
 
         .dark .glass-nav {
             background: rgba(17, 24, 39, 0.7);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .hero-glow {
@@ -53,10 +51,11 @@
             display: none !important;
         }
     </style>
+    @include('layouts.theme-styles')
 </head>
 
 <body
-    class="antialiased text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-900 selection:bg-indigo-500 selection:text-white overflow-x-hidden flex flex-col min-h-screen transition-colors duration-300"
+    class="antialiased text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-900 selection:bg-primary-500 selection:text-white overflow-x-hidden flex flex-col min-h-screen transition-colors duration-300"
     x-data="{ mobileMenuOpen: false, scrolled: false }" @scroll.window="scrolled = (window.pageYOffset > 20)">
 
     <!-- Navbar -->
@@ -67,7 +66,7 @@
                 <div class="flex items-center gap-8">
                     <a href="{{ url('/') }}" class="flex-shrink-0 flex items-center gap-2 group">
                         <div
-                            class="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/20 group-hover:scale-105 transition-transform duration-200">
+                            class="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-500 to-purple-600 flex items-center justify-center shadow-lg shadow-primary-500/20 group-hover:scale-105 transition-transform duration-200">
                             <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
@@ -76,7 +75,7 @@
                         </div>
                         <span
                             class="font-bold text-xl tracking-tight text-gray-900 dark:text-white transition-colors">Travel<span
-                                class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-purple-500 dark:from-indigo-400 dark:to-purple-400">AI</span></span>
+                                class="text-transparent bg-clip-text bg-gradient-to-r from-primary-500 to-purple-500 dark:from-primary-400 dark:to-purple-400">AI</span></span>
                     </a>
 
                     <!-- Desktop Nav -->
@@ -85,7 +84,7 @@
                         <div class="relative" x-data="{ open: false }" @mouseenter="open = true"
                             @mouseleave="open = false">
                             <button
-                                class="flex items-center gap-1 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-white transition-colors focus:outline-none">
+                                class="flex items-center gap-1 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-white transition-colors focus:outline-none">
                                 Services
                                 <svg class="w-4 h-4 transition-transform duration-200" :class="{ 'rotate-180': open }"
                                     fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -106,7 +105,7 @@
                                     <a href="{{ route('transport-rates') }}"
                                         class="flex items-start gap-3 p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors group">
                                         <div
-                                            class="flex-shrink-0 w-10 h-10 rounded-lg bg-indigo-50 dark:bg-indigo-900/30 flex items-center justify-center text-indigo-600 dark:text-indigo-400 group-hover:scale-110 transition-transform duration-200">
+                                            class="flex-shrink-0 w-10 h-10 rounded-lg bg-primary-50 dark:bg-primary-900/30 flex items-center justify-center text-primary-600 dark:text-primary-400 group-hover:scale-110 transition-transform duration-200">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z">
@@ -118,7 +117,7 @@
                                         </div>
                                         <div>
                                             <div
-                                                class="font-semibold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                                                class="font-semibold text-gray-900 dark:text-white group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
                                                 Transport Rates</div>
                                             <div class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Check fares &
                                                 book
@@ -170,16 +169,16 @@
                         </div>
 
                         <a href="{{ route('about') }}"
-                            class="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-white transition-colors">About</a>
+                            class="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-white transition-colors">About</a>
                         <a href="{{ route('contact') }}"
-                            class="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-white transition-colors">Contact</a>
+                            class="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-white transition-colors">Contact</a>
                     </div>
                 </div>
 
                 <div class="flex items-center gap-4">
                     <!-- Theme Toggle -->
                     <button id="theme-toggle"
-                        class="p-2 rounded-xl text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        class="p-2 rounded-xl text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500">
                         <!-- Sun Icon -->
                         <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="none" stroke="currentColor"
                             viewBox="0 0 24 24">
@@ -200,10 +199,10 @@
                         @if (Route::has('login'))
                             @auth
                                 <a href="{{ url('/dashboard') }}"
-                                    class="font-semibold text-gray-700 hover:text-indigo-600 dark:text-gray-300 dark:hover:text-white transition-colors">Dashboard</a>
+                                    class="font-semibold text-gray-700 hover:text-primary-600 dark:text-gray-300 dark:hover:text-white transition-colors">Dashboard</a>
                             @else
                                 <a href="{{ route('login') }}"
-                                    class="inline-flex items-center px-5 py-2.5 border border-transparent text-sm font-medium rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 dark:bg-white/10 dark:hover:bg-white/20 dark:border-white/10 transition-all duration-200 backdrop-blur-sm shadow-md dark:shadow-none">
+                                    class="inline-flex items-center px-5 py-2.5 border border-transparent text-sm font-medium rounded-xl text-white bg-primary-600 hover:bg-primary-700 dark:bg-white/10 dark:hover:bg-white/20 dark:border-white/10 transition-all duration-200 backdrop-blur-sm shadow-md dark:shadow-none">
                                     Log in
                                 </a>
                             @endauth
@@ -212,7 +211,7 @@
 
                     <!-- Mobile Menu Button -->
                     <button @click="mobileMenuOpen = !mobileMenuOpen" type="button"
-                        class="sm:hidden p-2 rounded-xl text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        class="sm:hidden p-2 rounded-xl text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500"
                         aria-controls="mobile-menu" :aria-expanded="mobileMenuOpen">
                         <span class="sr-only">Open main menu</span>
                         <svg class="h-6 w-6" :class="{ 'hidden': mobileMenuOpen, 'block': !mobileMenuOpen }" fill="none"
@@ -239,30 +238,30 @@
             <div class="px-2 pt-2 pb-3 space-y-1">
                 <div class="px-3 py-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">Services</div>
                 <a href="{{ route('transport-rates') }}"
-                    class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-200 hover:text-indigo-600 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800">Transport
+                    class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-200 hover:text-primary-600 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800">Transport
                     Rates</a>
                 <a href="{{ route('tour-packages') }}"
-                    class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-200 hover:text-indigo-600 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800">Tour
+                    class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-200 hover:text-primary-600 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800">Tour
                     Packages</a>
                 <a href="{{ route('attractions') }}"
-                    class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-200 hover:text-indigo-600 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800">Attractions</a>
+                    class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-200 hover:text-primary-600 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800">Attractions</a>
 
                 <div class="border-t border-gray-100 dark:border-gray-700 my-2"></div>
 
                 <a href="{{ route('about') }}"
-                    class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-200 hover:text-indigo-600 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800">About</a>
+                    class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-200 hover:text-primary-600 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800">About</a>
                 <a href="{{ route('contact') }}"
-                    class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-200 hover:text-indigo-600 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800">Contact</a>
+                    class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-200 hover:text-primary-600 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800">Contact</a>
 
                 <div class="border-t border-gray-100 dark:border-gray-700 my-2"></div>
 
                 @if (Route::has('login'))
                     @auth
                         <a href="{{ url('/dashboard') }}"
-                            class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-200 hover:text-indigo-600 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800">Dashboard</a>
+                            class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-200 hover:text-primary-600 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800">Dashboard</a>
                     @else
                         <a href="{{ route('login') }}"
-                            class="block w-full text-center mt-4 px-5 py-3 rounded-xl font-medium text-white bg-indigo-600 hover:bg-indigo-700 shadow-md">
+                            class="block w-full text-center mt-4 px-5 py-3 rounded-xl font-medium text-white bg-primary-600 hover:bg-primary-700 shadow-md">
                             Log in
                         </a>
                     @endauth
@@ -323,7 +322,7 @@
                 } else {
                     document.documentElement.classList.add('dark');
                     localStorage.setItem('theme', 'dark');
-     }
+                }
             }
 
         });

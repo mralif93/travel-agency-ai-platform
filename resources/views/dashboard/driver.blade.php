@@ -12,8 +12,8 @@
 
     <!-- Earnings Overview -->
     <div class="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        <div class="overflow-hidden rounded-lg bg-indigo-600 px-4 py-5 shadow sm:p-6 text-white">
-            <dt class="truncate text-sm font-medium text-indigo-100">Today's Earnings</dt>
+        <div class="overflow-hidden rounded-lg bg-primary-600 px-4 py-5 shadow sm:p-6 text-white">
+            <dt class="truncate text-sm font-medium text-primary-100">Today's Earnings</dt>
             <dd class="mt-1 text-3xl font-semibold tracking-tight">$120.50</dd>
         </div>
         <div
@@ -66,7 +66,7 @@
                         <div class="relative flex space-x-3">
                             <div>
                                 <span
-                                    class="h-8 w-8 rounded-full bg-indigo-500 flex items-center justify-center ring-8 ring-white dark:ring-gray-800">
+                                    class="h-8 w-8 rounded-full bg-primary-500 flex items-center justify-center ring-8 ring-white dark:ring-gray-800">
                                     <svg class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24"
                                         stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

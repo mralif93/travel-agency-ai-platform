@@ -15,25 +15,25 @@
                         <label for="name"
                             class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Name</label>
                         <input type="text" id="name"
-                            class="w-full px-4 py-3 rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-900 dark:text-white focus:ring-indigo-500 focus:border-indigo-500 transition-colors">
+                            class="w-full px-4 py-3 rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-900 dark:text-white focus:ring-primary-500 focus:border-primary-500 transition-colors">
                     </div>
 
                     <div>
                         <label for="email"
                             class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email</label>
                         <input type="email" id="email"
-                            class="w-full px-4 py-3 rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-900 dark:text-white focus:ring-indigo-500 focus:border-indigo-500 transition-colors">
+                            class="w-full px-4 py-3 rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-900 dark:text-white focus:ring-primary-500 focus:border-primary-500 transition-colors">
                     </div>
 
                     <div>
                         <label for="message"
                             class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Message</label>
                         <textarea id="message" rows="4"
-                            class="w-full px-4 py-3 rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-900 dark:text-white focus:ring-indigo-500 focus:border-indigo-500 transition-colors"></textarea>
+                            class="w-full px-4 py-3 rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-900 dark:text-white focus:ring-primary-500 focus:border-primary-500 transition-colors"></textarea>
                     </div>
 
                     <button type="submit"
-                        class="w-full py-4 px-6 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold rounded-xl shadow-lg transform transition hover:-translate-y-0.5">
+                        class="w-full py-4 px-6 bg-gradient-to-r from-primary-600 to-purple-600 hover:from-primary-700 hover:to-purple-700 text-white font-bold rounded-xl shadow-lg transform transition hover:-translate-y-0.5">
                         Send Message
                     </button>
                 </form>

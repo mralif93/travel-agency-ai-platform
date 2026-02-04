@@ -5,8 +5,8 @@
 
         <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10">
             <div
-                class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 dark:bg-indigo-900/30 border border-indigo-200 dark:border-indigo-500/30 text-indigo-600 dark:text-indigo-300 text-sm font-medium mb-8 backdrop-blur-sm transition-colors duration-300">
-                <span class="flex h-2 w-2 rounded-full bg-indigo-500 animate-pulse"></span>
+                class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-50 dark:bg-primary-900/30 border border-primary-200 dark:border-primary-500/30 text-primary-600 dark:text-primary-300 text-sm font-medium mb-8 backdrop-blur-sm transition-colors duration-300">
+                <span class="flex h-2 w-2 rounded-full bg-primary-500 animate-pulse"></span>
                 Next Gen Travel Platform
             </div>
 
@@ -14,7 +14,7 @@
                 class="text-5xl sm:text-7xl font-extrabold tracking-tight mb-8 text-gray-900 dark:text-white transition-colors duration-300">
                 The Future of <br class="hidden sm:block" />
                 <span
-                    class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 dark:from-indigo-400 dark:via-purple-400 dark:to-pink-400 animate-gradient">Travel
+                    class="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 via-purple-600 to-pink-600 dark:from-primary-400 dark:via-purple-400 dark:to-pink-400 animate-gradient">Travel
                     Management</span>
             </h1>
 
@@ -26,7 +26,7 @@
 
             <div class="flex flex-col sm:flex-row justify-center gap-4">
                 <a href="{{ route('login') }}"
-                    class="group relative inline-flex items-center justify-center px-8 py-4 text-base font-bold text-white transition-all duration-200 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl hover:from-indigo-700 hover:to-purple-700 shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:-translate-y-0.5">
+                    class="group relative inline-flex items-center justify-center px-8 py-4 text-base font-bold text-white transition-all duration-200 bg-gradient-to-r from-primary-600 to-purple-600 rounded-2xl hover:from-primary-700 hover:to-purple-700 shadow-lg shadow-primary-500/25 hover:shadow-primary-500/40 hover:-translate-y-0.5">
                     Start Your Journey
                     <svg class="ml-2 -mr-1 w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none"
                         stroke="currentColor" viewBox="0 0 24 24">
@@ -63,10 +63,10 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <!-- Feature 1 -->
                 <div
-                    class="relative group p-8 bg-gray-50 dark:bg-gray-800/40 border border-gray-200 dark:border-gray-700/50 rounded-3xl hover:bg-white dark:hover:bg-gray-800/60 transition-all duration-300 hover:shadow-xl dark:hover:shadow-none hover:border-indigo-500/30 dark:hover:border-indigo-500/30">
+                    class="relative group p-8 bg-gray-50 dark:bg-gray-800/40 border border-gray-200 dark:border-gray-700/50 rounded-3xl hover:bg-white dark:hover:bg-gray-800/60 transition-all duration-300 hover:shadow-xl dark:hover:shadow-none hover:border-primary-500/30 dark:hover:border-primary-500/30">
                     <div
-                        class="w-14 h-14 rounded-2xl bg-indigo-100 dark:bg-indigo-500/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                        <svg class="w-7 h-7 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor"
+                        class="w-14 h-14 rounded-2xl bg-primary-100 dark:bg-primary-500/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                        <svg class="w-7 h-7 text-primary-600 dark:text-primary-400" fill="none" stroke="currentColor"
                             viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z">

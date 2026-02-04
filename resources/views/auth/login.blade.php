@@ -6,7 +6,7 @@
                 class="bg-white dark:bg-gray-800 rounded-3xl p-8 shadow-xl border border-gray-100 dark:border-gray-700 backdrop-blur-xl transition-colors duration-300">
                 <div class="text-center mb-8">
                     <h1
-                        class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400 mb-2">
+                        class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-purple-600 dark:from-primary-400 dark:to-purple-400 mb-2">
                         Welcome Back
                     </h1>
                     <p class="text-gray-500 dark:text-gray-400 text-sm">
@@ -23,7 +23,7 @@
                             Address</label>
                         <div class="relative">
                             <input id="email"
-                                class="block w-full px-4 py-3 rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-900 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 transition-all duration-200"
+                                class="block w-full px-4 py-3 rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-900 dark:text-white shadow-sm focus:border-primary-500 focus:ring-primary-500 transition-all duration-200"
                                 type="email" name="email" value="{{ old('email') }}" required autofocus
                                 autocomplete="username" placeholder="example@example.com" />
                             <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
@@ -46,13 +46,13 @@
                             <label for="password"
                                 class="block text-sm font-medium text-gray-700 dark:text-gray-300">Password</label>
                             <a href="{{ route('password.request') }}"
-                                class="text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 font-medium transition-colors">
+                                class="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-500 font-medium transition-colors">
                                 Forgot Password?
                             </a>
                         </div>
                         <div class="relative">
                             <input id="password"
-                                class="block w-full px-4 py-3 rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-900 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 transition-all duration-200"
+                                class="block w-full px-4 py-3 rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-900 dark:text-white shadow-sm focus:border-primary-500 focus:ring-primary-500 transition-all duration-200"
                                 type="password" name="password" required autocomplete="current-password"
                                 placeholder="••••••••" />
                             <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
@@ -73,7 +73,7 @@
                     <div class="block">
                         <label for="remember_me" class="inline-flex items-center group cursor-pointer">
                             <input id="remember_me" type="checkbox"
-                                class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-600 text-indigo-600 shadow-sm focus:ring-indigo-500 transition-colors duration-200"
+                                class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-600 text-primary-600 shadow-sm focus:ring-primary-500 transition-colors duration-200"
                                 name="remember">
                             <span
                                 class="ms-2 text-sm text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-gray-200 transition-colors duration-200">Remember
@@ -82,7 +82,7 @@
                     </div>
 
                     <button type="submit"
-                        class="w-full py-3 px-6 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold rounded-xl shadow-lg transform transition hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                        class="w-full py-3 px-6 bg-gradient-to-r from-primary-600 to-purple-600 hover:from-primary-700 hover:to-purple-700 text-white font-bold rounded-xl shadow-lg transform transition hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2">
                         Log in
                     </button>
                 </form>
@@ -91,7 +91,7 @@
                     <p class="text-sm text-gray-600 dark:text-gray-400">
                         Don't have an account?
                         <a href="#"
-                            class="font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 transition-colors">
+                            class="font-medium text-primary-600 dark:text-primary-400 hover:text-primary-500 transition-colors">
                             Contact Admin
                         </a>
                     </p>

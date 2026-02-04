@@ -15,7 +15,7 @@
                 <div class="flex justify-between h-16">
                     <div class="flex">
                         <div class="flex-shrink-0 flex items-center">
-                            <span class="text-xl font-bold text-indigo-600 dark:text-indigo-400">TravelAI</span>
+                            <span class="text-xl font-bold text-primary-600 dark:text-primary-400">TravelAI</span>
                         </div>
                     </div>
                     <div class="flex items-center">

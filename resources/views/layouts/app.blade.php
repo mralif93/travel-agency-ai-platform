@@ -1,5 +1,7 @@
+@use('Illuminate\Support\Facades\Auth')
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full bg-gray-50 dark:bg-gray-900">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}"
+    class="h-full bg-gray-50 dark:bg-gray-900 {{ (Auth::user()->theme_mode === 'dark' || (Auth::user()->theme_mode === 'system' && request()->cookie('theme_preference') === 'dark')) ? 'dark' : '' }}">
 
 <head>
     <meta charset="utf-8">
@@ -10,6 +12,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
+    <!-- Boxicons -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <!-- Alpine.js -->
@@ -25,6 +29,24 @@
             display: none !important;
         }
     </style>
+    </style>
+    @include('layouts.theme-styles')
+
+    <!-- System Theme Detection -->
+    @if(Auth::user()->theme_mode === 'system')
+        <script>
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                document.documentElement.classList.add('dark');
+            }
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+                if (event.matches) {
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                }
+            });
+        </script>
+    @endif
 </head>
 
 <body class="h-full font-sans antialiased text-gray-900 dark:text-gray-100" x-data="{ sidebarOpen: false }">
@@ -57,7 +79,7 @@
                     class="flex grow flex-col gap-y-5 overflow-y-auto bg-white dark:bg-gray-800 px-6 pb-4 ring-1 ring-white/10">
                     <div class="flex h-16 shrink-0 items-center">
                         <span
-                            class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-purple-600">TravelAI</span>
+                            class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary-500 to-purple-600">TravelAI</span>
                     </div>
                     <nav class="flex flex-1 flex-col">
                         <ul role="list" class="flex flex-1 flex-col gap-y-7">
@@ -79,7 +101,7 @@
             class="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-6 pb-4">
             <div class="flex h-16 shrink-0 items-center gap-2">
                 <div
-                    class="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+                    class="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-500 to-purple-600 flex items-center justify-center">
                     <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
@@ -91,7 +113,7 @@
                 <!-- Role Badge -->
                 @php
                     $roleConfig = [
-                        'superadmin' => ['bg' => 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400', 'label' => 'Super'],
+                        'superadmin' => ['bg' => 'bg-primary-100 text-primary-700 dark:bg-primary-900/30 dark:text-primary-400', 'label' => 'Super'],
                         'admin' => ['bg' => 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400', 'label' => 'Admin'],
                         'driver' => ['bg' => 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400', 'label' => 'Driver'],
                         'company' => ['bg' => 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400', 'label' => 'Corp'],
@@ -141,7 +163,7 @@
                             aria-expanded="false" aria-haspopup="true" @click="open = !open" @click.away="open = false">
                             <span class="sr-only">Open user menu</span>
                             <div
-                                class="h-8 w-8 rounded-full bg-indigo-500 flex items-center justify-center text-white text-xs">
+                                class="h-8 w-8 rounded-full bg-primary-500 flex items-center justify-center text-white text-xs">
                                 {{ substr(Auth::user()->name, 0, 2) }}
                             </div>
                             <span class="hidden lg:flex lg:items-center">
@@ -163,6 +185,11 @@
                             x-transition:leave="transition ease-in duration-75"
                             x-transition:leave-start="transform opacity-100 scale-100"
                             x-transition:leave-end="transform opacity-0 scale-95" x-cloak>
+
+                            <!-- Settings Link -->
+                            <a href="{{ route('settings.edit') }}"
+                                class="block px-3 py-1 text-sm leading-6 text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700"
+                                role="menuitem" tabindex="-1">Settings</a>
 
                             <!-- Profile Link -->
                             <a href="{{ route('profile.edit') }}"
@@ -200,6 +227,49 @@
                                 }
                             })
                         }
+
+                        // Flash Messages
+                        @if (session('success'))
+                            const Toast = Swal.mixin({
+                                toast: true,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                }
+                            })
+
+                            Toast.fire({
+                                icon: 'success',
+                                title: "{{ session('success') }}",
+                                background: document.documentElement.classList.contains('dark') ? '#1f2937' : '#fff',
+                                color: document.documentElement.classList.contains('dark') ? '#fff' : '#1f2937'
+                            })
+                        @endif
+
+                        @if (session('error'))
+                            const Toast = Swal.mixin({
+                                toast: true,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                }
+                            })
+
+                            Toast.fire({
+                                icon: 'error',
+                                title: "{{ session('error') }}",
+                                background: document.documentElement.classList.contains('dark') ? '#1f2937' : '#fff',
+                                color: document.documentElement.classList.contains('dark') ? '#fff' : '#1f2937'
+                            })
+                        @endif
                     </script>
                 </div>
             </div>
