@@ -10,6 +10,7 @@ use App\Http\Controllers\PublicController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\OrderController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -71,5 +72,8 @@ Route::middleware('auth')->group(function () {
 
     // Vehicle Management
     Route::resource('vehicles', VehicleController::class);
+
+    // Order Management
+    Route::resource('orders', OrderController::class);
 });
 

@@ -19,6 +19,7 @@ class Vehicle extends Model
         'license_plate',
         'capacity',
         'status',
+        'price_multiplier',
     ];
 
     public function driver(): BelongsTo

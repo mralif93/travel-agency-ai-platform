@@ -46,6 +46,13 @@
         </a>
     </li>
     <li>
+        <a href="{{ route('orders.index') }}"
+            class="{{ request()->routeIs('orders.*') ? 'bg-primary-50 dark:bg-primary-900/10 text-primary-600 dark:text-primary-400' : 'text-gray-700 dark:text-gray-400 hover:text-primary-600 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold">
+            <i class='bx bx-trip text-xl shrink-0 text-gray-400 group-hover:text-primary-600 transition-colors'></i>
+            Order Management
+        </a>
+    </li>
+    <li>
         <a href="#"
             class="text-gray-700 dark:text-gray-400 hover:text-primary-600 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold">
             <svg class="h-6 w-6 shrink-0 text-gray-400 group-hover:text-primary-600" fill="none" viewBox="0 0 24 24"
