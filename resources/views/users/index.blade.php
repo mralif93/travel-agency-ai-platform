@@ -12,6 +12,81 @@
                 User</a>
         </div>
     </div>
+
+    <!-- Filters -->
+    <div class="mt-8 bg-white dark:bg-gray-800 shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl overflow-hidden">
+        <div class="bg-gray-50 dark:bg-gray-800/50 border-b border-gray-200 dark:border-gray-700 px-4 py-3 sm:px-6">
+            <h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-white">Search and Filter</h3>
+        </div>
+        <div class="p-4 sm:p-6">
+            <form action="{{ route('users.index') }}" method="GET">
+                <div class="flex flex-col sm:flex-row gap-4 items-end">
+                    <!-- Search (Flex Grow) -->
+                    <div class="w-full sm:flex-1">
+                        <label for="search"
+                            class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Search</label>
+                        <div class="relative rounded-md">
+                            <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                                <i class='bx bx-search text-gray-400 text-lg'></i>
+                            </div>
+                            <input type="text" name="search" id="search" value="{{ request('search') }}"
+                                class="block w-full rounded-md border-0 py-1.5 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 pl-10 focus:ring-2 focus:ring-inset focus:ring-primary-600 sm:text-sm sm:leading-6 dark:bg-gray-900 dark:text-white h-10"
+                                placeholder="Name or Email">
+                        </div>
+                    </div>
+
+                    <!-- Filters Group -->
+                    <div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto items-end">
+                        <!-- Role Filter -->
+                        <div class="w-full sm:w-44 text-sm">
+                            <label for="role"
+                                class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Role</label>
+                            <select name="role" id="role"
+                                style="background-image: url(&quot;data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e&quot;); background-position: right 1rem center; background-repeat: no-repeat; background-size: 1.5em 1.5em; padding-right: 2.5rem !important;"
+                                class="block w-full appearance-none rounded-md border-0 py-1.5 pl-3 text-gray-900 dark:text-gray-100 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 focus:ring-2 focus:ring-inset focus:ring-primary-600 sm:text-sm sm:leading-6 dark:bg-gray-900 h-10">
+                                <option value="">All Roles</option>
+                                <option value="superadmin" {{ request('role') == 'superadmin' ? 'selected' : '' }}>Super
+                                    Admin</option>
+                                <option value="admin" {{ request('role') == 'admin' ? 'selected' : '' }}>Admin</option>
+                                <option value="company" {{ request('role') == 'company' ? 'selected' : '' }}>Company
+                                </option>
+                                <option value="driver" {{ request('role') == 'driver' ? 'selected' : '' }}>Driver</option>
+                            </select>
+                        </div>
+
+                        <!-- Company Filter -->
+                        <div class="w-full sm:w-52 text-sm">
+                            <label for="company_id"
+                                class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Company</label>
+                            <select name="company_id" id="company_id"
+                                style="background-image: url(&quot;data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e&quot;); background-position: right 1rem center; background-repeat: no-repeat; background-size: 1.5em 1.5em; padding-right: 2.5rem !important;"
+                                class="block w-full appearance-none rounded-md border-0 py-1.5 pl-3 text-gray-900 dark:text-gray-100 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 focus:ring-2 focus:ring-inset focus:ring-primary-600 sm:text-sm sm:leading-6 dark:bg-gray-900 h-10">
+                                <option value="">All Companies</option>
+                                @foreach($companies as $company)
+                                    <option value="{{ $company->id }}" {{ request('company_id') == $company->id ? 'selected' : '' }}>
+                                        {{ Str::limit($company->name, 20) }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <!-- Actions -->
+                        <button type="submit"
+                            class="inline-flex items-center justify-center rounded-md bg-primary-600 px-4 py-2 text-sm font-semibold text-white hover:bg-primary-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 h-10">
+                            Filter
+                        </button>
+
+                        <a href="{{ route('users.index') }}"
+                            class="inline-flex items-center justify-center rounded-md bg-white dark:bg-gray-700 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 h-10"
+                            title="Reset Filters">
+                            <i class='bx bx-reset text-lg'></i>
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <div class="mt-8 flow-root">
         <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">

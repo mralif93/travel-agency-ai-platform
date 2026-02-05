@@ -22,6 +22,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'company_id',
         'theme_mode',
         'theme_color',
     ];
@@ -52,5 +53,10 @@ class User extends Authenticatable
     public function vehicle(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
         return $this->hasOne(Vehicle::class);
+    }
+
+    public function company(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Company::class);
     }
 }
