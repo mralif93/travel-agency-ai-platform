@@ -10,9 +10,39 @@ class OrderController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $orders = Order::with(['customer', 'vehicle'])->latest()->paginate(10);
+        $query = Order::with(['customer', 'vehicle'])->latest();
+
+        // Scope for Company Admin
+        if (auth()->user()->role === 'company') {
+            $query->whereHas('vehicle.driver', function ($q) {
+                $q->where('company_id', auth()->user()->company_id);
+            });
+        }
+
+        // Scope for Driver
+        if (auth()->user()->role === 'driver') {
+            $query->whereHas('vehicle', function ($q) {
+                $q->where('user_id', auth()->id());
+            });
+        }
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('id', 'like', "%{$search}%")
+                    ->orWhereHas('customer', function ($q) use ($search) {
+                        $q->where('name', 'like', "%{$search}%");
+                    });
+            });
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $orders = $query->paginate(10);
         return view('orders.index', compact('orders'));
     }
 
@@ -21,6 +51,10 @@ class OrderController extends Controller
      */
     public function create()
     {
+        if (auth()->user()->role === 'driver') {
+            abort(403);
+        }
+
         $customers = \App\Models\Customer::all();
         $vehicles = \App\Models\Vehicle::where('status', 'active')->get();
         return view('orders.create', compact('customers', 'vehicles'));
@@ -31,6 +65,9 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
+        if (auth()->user()->role === 'driver') {
+            abort(403);
+        }
         $validated = $request->validate([
             'customer_id' => 'required|exists:customers,id',
             'vehicle_id' => 'required|exists:vehicles,id',
@@ -85,6 +122,10 @@ class OrderController extends Controller
      */
     public function edit(Order $order)
     {
+        if (auth()->user()->role === 'driver') {
+            abort(403);
+        }
+
         $customers = \App\Models\Customer::all();
         $vehicles = \App\Models\Vehicle::where('status', 'active')->get();
         return view('orders.edit', compact('order', 'customers', 'vehicles'));
@@ -95,6 +136,9 @@ class OrderController extends Controller
      */
     public function update(Request $request, Order $order)
     {
+        if (auth()->user()->role === 'driver') {
+            abort(403);
+        }
         $validated = $request->validate([
             'customer_id' => 'required|exists:customers,id',
             'vehicle_id' => 'required|exists:vehicles,id',
@@ -135,7 +179,46 @@ class OrderController extends Controller
      */
     public function destroy(Order $order)
     {
+        if (auth()->user()->role === 'driver') {
+            abort(403);
+        }
         $order->delete();
         return redirect()->route('orders.index')->with('success', 'Order deleted successfully.');
+    }
+    public function verify(Request $request, Order $order)
+    {
+        if ($order->vehicle->driver_id !== $request->user()->id) {
+            return response()->json(['success' => false, 'message' => 'Unauthorized driver'], 403);
+        }
+
+        // Allow starting the trip if it's pending or scheduled
+        if (in_array($order->status, ['pending', 'scheduled'])) {
+            $order->update(['status' => 'active']); // 'active' means in_progress/started
+            return response()->json(['success' => true, 'message' => 'Trip started!', 'status' => 'active']);
+
+        } elseif ($order->status === 'active') {
+            $order->update(['status' => 'completed']);
+
+            // Auto-generate Invoice
+            $driver = $order->vehicle->driver;
+            // Check if driver belongs to a company (B2B invoice) or is independent/platform
+            // For now, we assume current requirement is: invoice for every trip.
+
+            \App\Models\Invoice::create([
+                'order_id' => $order->id,
+                'company_id' => $driver->company_id ?? null, // Nullable if driver has no company? Or assume company exists.
+                // If company_id is required by schema, this might fail for independent drivers. 
+                // Assuming for this project scope, all drivers belong to a company as per earlier context.
+                'issue_date' => now(),
+                'due_date' => now(), // Immediate due
+                'description' => "Trip #TR-" . substr($order->id, 0, 8) . " - " . $order->pickup_address . " to " . $order->dropoff_address,
+                'amount' => $order->total_price,
+                'status' => 'paid',
+            ]);
+
+            return response()->json(['success' => true, 'message' => 'Trip completed & Invoice generated!', 'status' => 'completed']);
+        }
+
+        return response()->json(['success' => false, 'message' => 'Invalid order status'], 400);
     }
 }

@@ -42,6 +42,18 @@
                     @csrf
                     @method('PUT')
 
+                    <!-- Error Handling -->
+                    @if ($errors->any())
+                        <div
+                            class="mb-6 rounded-lg bg-red-50 dark:bg-red-900/30 p-4 text-sm text-red-800 dark:text-red-200">
+                            <ul class="list-disc pl-5 space-y-1">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
                     <!-- Hidden Lat/Lng Inputs -->
                     <input type="hidden" id="pickup_latitude" name="pickup_latitude"
                         value="{{ old('pickup_latitude', $order->pickup_latitude) }}">
@@ -474,6 +486,73 @@
 
             if (hasResults) suggestions.classList.remove('hidden');
         }
+
+        function setupSearch(inputId, suggestionsId, type, clearBtnId) {
+            const input = document.getElementById(inputId);
+            const suggestions = document.getElementById(suggestionsId);
+            const clearBtn = document.getElementById(clearBtnId);
+
+            // Toggle clear button
+            const toggleClear = () => {
+                if (input.value.length > 0) clearBtn.classList.remove('hidden');
+                else clearBtn.classList.add('hidden');
+            };
+
+            // Initial check
+            toggleClear();
+
+            // Clear functionality
+            clearBtn.addEventListener('click', () => {
+                input.value = '';
+                toggleClear();
+                suggestions.classList.add('hidden');
+
+                // Clear coordinates
+                if (type === 'pickup') {
+                    pickupCoords = null;
+                    document.getElementById('pickup_latitude').value = '';
+                    document.getElementById('pickup_longitude').value = '';
+                } else {
+                    dropoffCoords = null;
+                    document.getElementById('dropoff_latitude').value = '';
+                    document.getElementById('dropoff_longitude').value = '';
+                }
+
+                // Reset Price/Distance if missing one point
+                if (!pickupCoords || !dropoffCoords) {
+                    document.getElementById('display_distance').textContent = '0.00 km';
+                    document.getElementById('display_price').textContent = 'RM 0.00';
+                    document.getElementById('map_container').classList.add('hidden');
+                }
+
+                input.focus();
+            });
+
+            // Show hotspots on focus
+            input.addEventListener('focus', () => {
+                const query = input.value.toLowerCase();
+                performSearch(inputId, suggestionsId, type, query);
+            });
+
+            input.addEventListener('input', () => {
+                toggleClear();
+                clearTimeout(debounceTimer);
+                const query = input.value.toLowerCase();
+                debounceTimer = setTimeout(() => {
+                    performSearch(inputId, suggestionsId, type, query);
+                }, 300);
+            });
+
+            // Close on outside click
+            document.addEventListener('click', (e) => {
+                if (e.target !== input && e.target !== suggestions && !suggestions.contains(e.target) && e.target !== clearBtn && !clearBtn.contains(e.target)) {
+                    suggestions.classList.add('hidden');
+                }
+            });
+        }
+
+        setupSearch('pickup_address', 'pickup_suggestions', 'pickup', 'pickup_clear');
+        setupSearch('dropoff_address', 'dropoff_suggestions', 'dropoff', 'dropoff_clear');
 
         function setupSearch(inputId, suggestionsId, type, clearBtnId) {
             const input = document.getElementById(inputId);

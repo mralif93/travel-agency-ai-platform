@@ -40,11 +40,22 @@
             <div class="px-6 py-8">
                 <form action="{{ route('orders.store') }}" method="POST">
                     @csrf
-                    <input type="hidden" id="pickup_lat" name="pickup_latitude">
-                    <input type="hidden" id="pickup_lng" name="pickup_longitude">
-                    <input type="hidden" id="dropoff_lat" name="dropoff_latitude">
-                    <input type="hidden" id="dropoff_lng" name="dropoff_longitude">
-                    <input type="hidden" id="distance_km" name="distance_km">
+                    <input type="hidden" id="pickup_latitude" name="pickup_latitude" value="{{ old('pickup_latitude') }}">
+                    <input type="hidden" id="pickup_longitude" name="pickup_longitude" value="{{ old('pickup_longitude') }}">
+                    <input type="hidden" id="dropoff_latitude" name="dropoff_latitude" value="{{ old('dropoff_latitude') }}">
+                    <input type="hidden" id="dropoff_longitude" name="dropoff_longitude" value="{{ old('dropoff_longitude') }}">
+                    <input type="hidden" id="distance_km" name="distance_km" value="{{ old('distance_km') }}">
+
+                    <!-- Error Handling -->
+                    @if ($errors->any())
+                        <div class="mb-6 rounded-lg bg-red-50 dark:bg-red-900/30 p-4 text-sm text-red-800 dark:text-red-200">
+                            <ul class="list-disc pl-5 space-y-1">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
 
                     <div class="space-y-10">
                         <!-- Section 1: Trip Route (Top) -->
@@ -471,6 +482,9 @@
                 if (input.value.length > 0) clearBtn.classList.remove('hidden');
                 else clearBtn.classList.add('hidden');
             };
+
+            // Initial check
+            toggleClear();
 
             // Clear functionality
             clearBtn.addEventListener('click', () => {

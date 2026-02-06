@@ -6,10 +6,49 @@
         </div>
         <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
             <a href="{{ route('customers.create') }}"
-                class="block rounded-md bg-primary-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-primary-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600">Add
-                Customer</a>
+                class="block rounded-md bg-primary-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-primary-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600">
+                <i class='bx bx-plus align-middle mr-1'></i>Create Customer
+            </a>
         </div>
     </div>
+    <!-- Filters -->
+    <div class="mt-8 bg-white dark:bg-gray-800 shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl overflow-hidden">
+        <div class="bg-gray-50 dark:bg-gray-800/50 border-b border-gray-200 dark:border-gray-700 px-4 py-3 sm:px-6">
+            <h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-white">Search and Filter</h3>
+        </div>
+        <div class="p-4 sm:p-6">
+            <form action="{{ route('customers.index') }}" method="GET">
+                <div class="flex flex-col sm:flex-row gap-4 items-end">
+                    <!-- Search (Flex Grow) -->
+                    <div class="w-full sm:flex-1">
+                        <label for="search"
+                            class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Search</label>
+                        <div class="relative rounded-md">
+                            <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                                <i class='bx bx-search text-gray-400 text-lg'></i>
+                            </div>
+                            <input type="text" name="search" id="search" value="{{ request('search') }}"
+                                class="block w-full rounded-md border-0 py-1.5 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 pl-10 focus:ring-2 focus:ring-inset focus:ring-primary-600 sm:text-sm sm:leading-6 dark:bg-gray-900 dark:text-white h-10"
+                                placeholder="Name, Email or Phone">
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <button type="submit"
+                        class="inline-flex items-center justify-center rounded-md bg-primary-600 px-4 py-2 text-sm font-semibold text-white hover:bg-primary-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 h-10">
+                        Filter
+                    </button>
+
+                    <a href="{{ route('customers.index') }}"
+                        class="inline-flex items-center justify-center rounded-md bg-white dark:bg-gray-700 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 h-10"
+                        title="Reset Filters">
+                        <i class='bx bx-reset text-lg'></i>
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <div class="mt-8 flow-root">
         <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
@@ -74,11 +113,9 @@
                             @endforeach
                         </tbody>
                     </table>
+                    <x-card-pagination :items="$customers" />
                 </div>
             </div>
-        </div>
-        <div class="mt-4 px-4 sm:px-6 lg:px-8">
-            {{ $customers->links() }}
         </div>
     </div>
 </x-app-layout>

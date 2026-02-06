@@ -84,53 +84,68 @@
                     </div>
 
                     <!-- Status -->
-                    <div class="sm:col-span-3">
-                        <label for="status"
-                            class="block text-sm font-medium leading-6 text-gray-900 dark:text-white">Status</label>
-                        <div class="mt-2 relative">
-                            <select id="status" name="status"
-                                class="block w-full appearance-none rounded-md border-0 py-2.5 pl-3 pr-10 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-primary-600 sm:text-sm sm:leading-6 dark:bg-gray-900 dark:text-white dark:ring-gray-700">
-                                <option value="active" {{ old('status', $vehicle->status) == 'active' ? 'selected' : '' }}>Active</option>
-                                <option value="maintenance" {{ old('status', $vehicle->status) == 'maintenance' ? 'selected' : '' }}>Maintenance</option>
-                                <option value="inactive" {{ old('status', $vehicle->status) == 'inactive' ? 'selected' : '' }}>Inactive</option>
-                            </select>
-                            <div
-                                class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
-                                <i class='bx bx-chevron-down text-lg'></i>
+                    @if(auth()->user()->role !== 'driver')
+                        <div class="sm:col-span-3">
+                            <label for="status"
+                                class="block text-sm font-medium leading-6 text-gray-900 dark:text-white">Status</label>
+                            <div class="mt-2 relative">
+                                <select id="status" name="status"
+                                    class="block w-full appearance-none rounded-md border-0 py-2.5 pl-3 pr-10 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-primary-600 sm:text-sm sm:leading-6 dark:bg-gray-900 dark:text-white dark:ring-gray-700">
+                                    <option value="active" {{ old('status', $vehicle->status) == 'active' ? 'selected' : '' }}>Active</option>
+                                    <option value="maintenance" {{ old('status', $vehicle->status) == 'maintenance' ? 'selected' : '' }}>Maintenance</option>
+                                    <option value="inactive" {{ old('status', $vehicle->status) == 'inactive' ? 'selected' : '' }}>Inactive</option>
+                                </select>
+                                <div
+                                    class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
+                                    <i class='bx bx-chevron-down text-lg'></i>
+                                </div>
+                                @error('status')
+                                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
                             </div>
-                            @error('status')
-                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
-                            @enderror
                         </div>
-                    </div>
 
-                    <!-- Driver -->
-                    <div class="sm:col-span-6">
-                        <label for="user_id"
-                            class="block text-sm font-medium leading-6 text-gray-900 dark:text-white">Assigned
-                            Driver</label>
-                        <div class="mt-2 relative">
-                            <select id="user_id" name="user_id"
-                                class="block w-full appearance-none rounded-md border-0 py-2.5 pl-3 pr-10 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-primary-600 sm:text-sm sm:leading-6 dark:bg-gray-900 dark:text-white dark:ring-gray-700">
-                                <option value="">Select a Driver</option>
-                                @foreach ($drivers as $driver)
-                                    <option value="{{ $driver->id }}" {{ old('user_id', $vehicle->user_id) == $driver->id ? 'selected' : '' }}>{{ $driver->name }}</option>
-                                @endforeach
-                            </select>
-                            <div
-                                class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
-                                <i class='bx bx-chevron-down text-lg'></i>
+                        <!-- Driver -->
+                        <div class="sm:col-span-6">
+                            <label for="user_id"
+                                class="block text-sm font-medium leading-6 text-gray-900 dark:text-white">Assigned
+                                Driver</label>
+                            <div class="mt-2 relative">
+                                <select id="user_id" name="user_id"
+                                    class="block w-full appearance-none rounded-md border-0 py-2.5 pl-3 pr-10 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-primary-600 sm:text-sm sm:leading-6 dark:bg-gray-900 dark:text-white dark:ring-gray-700">
+                                    <option value="">Select a Driver</option>
+                                    @foreach ($drivers as $driver)
+                                        <option value="{{ $driver->id }}" {{ old('user_id', $vehicle->driver_id) == $driver->id ? 'selected' : '' }}>{{ $driver->name }}</option>
+                                    @endforeach
+                                </select>
+                                <div
+                                    class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
+                                    <i class='bx bx-chevron-down text-lg'></i>
+                                </div>
+                                @error('user_id')
+                                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
                             </div>
-                            @error('user_id')
-                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
-                            @enderror
                         </div>
-                    </div>
+                    @else
+                        <!-- Hidden inputs for Driver to preserve data if needed or just display -->
+                        <div class="sm:col-span-3">
+                            <label class="block text-sm font-medium leading-6 text-gray-900 dark:text-white">Status</label>
+                            <div class="mt-2">
+                                <span
+                                    class="inline-flex items-center rounded-md bg-gray-50 dark:bg-gray-700 px-2 py-1 text-xs font-medium text-gray-600 dark:text-gray-300 ring-1 ring-inset ring-gray-500/10">
+                                    {{ ucfirst($vehicle->status) }} <span class="ml-1 text-[10px] text-gray-400">(Contact
+                                        Admin to change)</span>
+                                </span>
+                            </div>
+                        </div>
+                    @endif
 
                 </div>
             </div>
 
-            <div class="flex items-center justify-end gap-x-6 border-t border-gray-900/10 dark:border-gray-700 px-4 py-4 sm:px-8">
+            <div
+                class="flex items-center justify-end gap-x-6 border-t border-gray-900/10 dark:border-gray-700 px-4 py-4 sm:px-8">
                 <a href="{{ route('vehicles.index') }}"
                     class="text-sm font-semibold leading-6 text-gray-900 dark:text-white">Cancel</a>
                 <button type="submit"

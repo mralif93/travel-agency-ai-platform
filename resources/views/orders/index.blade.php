@@ -5,12 +5,68 @@
             <p class="mt-2 text-sm text-gray-700 dark:text-gray-400">A list of all scheduled trips and orders.</p>
         </div>
         <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
+            @if(auth()->user()->role !== 'driver')
             <a href="{{ route('orders.create') }}"
                 class="block rounded-md bg-primary-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-primary-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600">
-                Create Order
+                <i class='bx bx-plus align-middle mr-1'></i>Create Order
             </a>
+            @endif
         </div>
     </div>
+    <!-- Filters -->
+    <div class="mt-8 bg-white dark:bg-gray-800 shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl overflow-hidden">
+        <div class="bg-gray-50 dark:bg-gray-800/50 border-b border-gray-200 dark:border-gray-700 px-4 py-3 sm:px-6">
+            <h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-white">Search and Filter</h3>
+        </div>
+        <div class="p-4 sm:p-6">
+            <form action="{{ route('orders.index') }}" method="GET">
+                <div class="flex flex-col sm:flex-row gap-4 items-end">
+                    <!-- Search (Flex Grow) -->
+                    <div class="w-full sm:flex-1">
+                        <label for="search"
+                            class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Search</label>
+                        <div class="relative rounded-md">
+                            <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                                <i class='bx bx-search text-gray-400 text-lg'></i>
+                            </div>
+                            <input type="text" name="search" id="search" value="{{ request('search') }}"
+                                class="block w-full rounded-md border-0 py-1.5 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 pl-10 focus:ring-2 focus:ring-inset focus:ring-primary-600 sm:text-sm sm:leading-6 dark:bg-gray-900 dark:text-white h-10"
+                                placeholder="Order ID or Customer Name">
+                        </div>
+                    </div>
+
+                    <!-- Status Filter -->
+                    <div class="w-full sm:w-44 text-sm">
+                        <label for="status"
+                            class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Status</label>
+                        <select name="status" id="status"
+                            style="background-image: url(&quot;data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e&quot;); background-position: right 1rem center; background-repeat: no-repeat; background-size: 1.5em 1.5em; padding-right: 2.5rem !important;"
+                            class="block w-full appearance-none rounded-md border-0 py-1.5 pl-3 text-gray-900 dark:text-gray-100 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 focus:ring-2 focus:ring-inset focus:ring-primary-600 sm:text-sm sm:leading-6 dark:bg-gray-900 h-10">
+                            <option value="">All Statuses</option>
+                            <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending (New)</option>
+                            <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Active (Current)</option>
+                            <option value="processing" {{ request('status') == 'processing' ? 'selected' : '' }}>Processing</option>
+                            <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>Completed</option>
+                            <option value="cancelled" {{ request('status') == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
+                        </select>
+                    </div>
+
+                    <!-- Actions -->
+                    <button type="submit"
+                        class="inline-flex items-center justify-center rounded-md bg-primary-600 px-4 py-2 text-sm font-semibold text-white hover:bg-primary-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 h-10">
+                        Filter
+                    </button>
+
+                    <a href="{{ route('orders.index') }}"
+                        class="inline-flex items-center justify-center rounded-md bg-white dark:bg-gray-700 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 h-10"
+                        title="Reset Filters">
+                        <i class='bx bx-reset text-lg'></i>
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <div class="mt-8 flow-root">
         <div class="mt-8 flow-root">
             <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -117,6 +173,7 @@
                                             @php
                                                 $statusColors = [
                                                     'pending' => 'bg-yellow-50 text-yellow-700 ring-yellow-600/20 dark:bg-yellow-900/30 dark:text-yellow-400',
+                                                    'active' => 'bg-blue-50 text-blue-700 ring-blue-600/20 dark:bg-blue-900/30 dark:text-blue-400',
                                                     'completed' => 'bg-green-50 text-green-700 ring-green-600/20 dark:bg-green-900/30 dark:text-green-400',
                                                     'cancelled' => 'bg-red-50 text-red-700 ring-red-600/20 dark:bg-red-900/30 dark:text-red-400',
                                                     'processing' => 'bg-blue-50 text-blue-700 ring-blue-600/20 dark:bg-blue-900/30 dark:text-blue-400',
@@ -136,6 +193,7 @@
                                                    title="View Details">
                                                     <i class='bx bx-show text-lg'></i>
                                                 </a>
+                                                @if(auth()->user()->role !== 'driver')
                                                 <a href="{{ route('orders.edit', $order) }}" 
                                                    class="flex items-center justify-center w-8 h-8 rounded-full bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors" 
                                                    title="Edit Order">
@@ -148,6 +206,7 @@
                                                     title="Delete Order">
                                                     <i class='bx bx-trash text-lg'></i>
                                                 </button>
+                                                @endif
                                                 
                                                 <form id="delete-form-{{ $order->id }}" action="{{ route('orders.destroy', $order) }}" method="POST" class="hidden">
                                                     @csrf
@@ -164,19 +223,19 @@
                                                     <i class='bx bx-calendar-x text-2xl text-gray-400'></i>
                                                 </div>
                                                 <h3 class="text-sm font-medium text-gray-900 dark:text-white">No orders found</h3>
+                                                @if(auth()->user()->role !== 'driver')
                                                 <a href="{{ route('orders.create') }}" class="mt-2 text-primary-600 hover:text-primary-500 text-xs font-medium">Create New Order &rarr;</a>
+                                                @endif
                                             </div>
                                         </td>
                                     </tr>
                                 @endforelse
                             </tbody>
                         </table>
+                        <x-card-pagination :items="$orders" />
                     </div>
                 </div>
             </div>
-            
-        <div class="mt-4 px-4 sm:px-6 lg:px-8">
-            {{ $orders->links() }}
         </div>
     </div>
     

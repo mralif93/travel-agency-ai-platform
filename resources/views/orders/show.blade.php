@@ -80,7 +80,22 @@
                         <div id="map" class="h-80 w-full z-0"></div>
                     </div>
 
-                    <!-- Section 2: Assignment (Middle) -->
+                    <!-- Section 2: Verification (QR) -->
+                    <div
+                        class="bg-gray-50 dark:bg-gray-900/50 rounded-xl p-6 border border-gray-100 dark:border-gray-700 flex flex-col items-center justify-center text-center">
+                        <h3
+                            class="text-sm font-bold uppercase tracking-wider text-gray-500 mb-4 flex items-center gap-2">
+                            <i class='bx bx-qr-scan text-lg'></i> Verification Code
+                        </h3>
+                        <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
+                            <!-- Generate QR Code on the fly -->
+                            <!-- Size 150px, Color Black -->
+                            {!! QrCode::size(150)->generate($order->id) !!}
+                        </div>
+                        <p class="text-xs text-gray-400 mt-4">Show this code to your driver to start the trip.</p>
+                    </div>
+
+                    <!-- Section 3: Assignment (Middle) -->
                     <div>
                         <h3
                             class="text-sm font-bold uppercase tracking-wider text-gray-500 mb-6 flex items-center gap-2">
@@ -92,14 +107,16 @@
                             <div>
                                 <label class="block text-sm font-medium text-gray-500 mb-1">Customer</label>
                                 <div class="font-medium text-gray-900 dark:text-white text-lg">
-                                    {{ $order->customer->name }}</div>
+                                    {{ $order->customer->name }}
+                                </div>
                                 <div class="text-sm text-gray-500">{{ $order->customer->phone }}</div>
                             </div>
 
                             <div>
                                 <label class="block text-sm font-medium text-gray-500 mb-1">Vehicle</label>
                                 <div class="font-medium text-gray-900 dark:text-white text-lg">
-                                    {{ $order->vehicle->make }} {{ $order->vehicle->model }}</div>
+                                    {{ $order->vehicle->make }} {{ $order->vehicle->model }}
+                                </div>
                                 <div class="text-sm text-gray-500">{{ $order->vehicle->license_plate }}</div>
                             </div>
                         </div>
@@ -114,7 +131,8 @@
                                     class="text-gray-500 dark:text-gray-400 text-sm font-bold uppercase tracking-wider mb-1">
                                     Total Distance</div>
                                 <div class="text-3xl font-mono font-bold text-gray-900 dark:text-white">
-                                    {{ number_format($order->distance_km, 2) }} km</div>
+                                    {{ number_format($order->distance_km, 2) }} km
+                                </div>
                                 <div class="text-xs text-gray-400 mt-2">Calculated via OSRM</div>
                             </div>
 
@@ -126,7 +144,8 @@
                                     class="text-primary-600 dark:text-primary-400 text-sm font-bold uppercase tracking-wider mb-1">
                                     Total Fare</div>
                                 <div class="text-4xl font-bold tracking-tight text-gray-900 dark:text-white">RM
-                                    {{ number_format($order->total_price, 2) }}</div>
+                                    {{ number_format($order->total_price, 2) }}
+                                </div>
                                 <div class="text-xs text-gray-400 mt-2">Includes base fare & distance multiplier</div>
                             </div>
                         </div>
@@ -139,11 +158,22 @@
                     <a href="{{ route('orders.index') }}"
                         class="px-5 py-2.5 text-sm font-semibold text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">Back
                         to List</a>
-                    <a href="{{ route('orders.edit', $order->id) }}"
-                        class="px-6 py-2.5 rounded-lg bg-black dark:bg-white text-white dark:text-black font-semibold shadow-sm hover:opacity-90 transition-opacity flex items-center gap-2">
-                        <i class='bx bx-edit text-lg'></i>
-                        <span>Edit Order</span>
-                    </a>
+
+                    @if(auth()->user()->role !== 'driver')
+                        <a href="{{ route('orders.edit', $order->id) }}"
+                            class="px-6 py-2.5 rounded-lg bg-black dark:bg-white text-white dark:text-black font-semibold shadow-sm hover:opacity-90 transition-opacity flex items-center gap-2">
+                            <i class='bx bx-edit text-lg'></i>
+                            <span>Edit Order</span>
+                        </a>
+                    @endif
+
+                    @if($order->invoice)
+                        <a href="{{ route('invoices.show', $order->invoice->id) }}"
+                            class="px-6 py-2.5 rounded-lg bg-green-600 text-white font-semibold shadow-sm hover:opacity-90 transition-opacity flex items-center gap-2">
+                            <i class='bx bx-receipt text-lg'></i>
+                            <span>View Invoice</span>
+                        </a>
+                    @endif
                 </div>
             </div>
         </div>

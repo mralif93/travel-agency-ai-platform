@@ -16,17 +16,18 @@
         <div
             class="overflow-hidden rounded-lg bg-white dark:bg-gray-800 px-4 py-5 shadow sm:p-6 backdrop-blur-xl border border-gray-100 dark:border-gray-700">
             <dt class="truncate text-sm font-medium text-gray-500 dark:text-gray-400">Active Trips</dt>
-            <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900 dark:text-white">4</dd>
+            <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900 dark:text-white">{{ $activeTrips }}</dd>
         </div>
         <div
             class="overflow-hidden rounded-lg bg-white dark:bg-gray-800 px-4 py-5 shadow sm:p-6 backdrop-blur-xl border border-gray-100 dark:border-gray-700">
             <dt class="truncate text-sm font-medium text-gray-500 dark:text-gray-400">Total Spend (Month)</dt>
-            <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900 dark:text-white">$8,450.00</dd>
+            <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900 dark:text-white">
+                ${{ number_format($totalSpend, 2) }}</dd>
         </div>
         <div
             class="overflow-hidden rounded-lg bg-white dark:bg-gray-800 px-4 py-5 shadow sm:p-6 backdrop-blur-xl border border-gray-100 dark:border-gray-700">
             <dt class="truncate text-sm font-medium text-gray-500 dark:text-gray-400">Pending Approvals</dt>
-            <dd class="mt-1 text-3xl font-semibold tracking-tight text-yellow-500">2</dd>
+            <dd class="mt-1 text-3xl font-semibold tracking-tight text-yellow-500">{{ $pendingApprovals }}</dd>
         </div>
     </dl>
 
@@ -39,10 +40,10 @@
                     <tr>
                         <th scope="col"
                             class="py-3.5 pl-4 pr-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 sm:pl-6">
-                            Employee</th>
+                            Employee / Driver</th>
                         <th scope="col"
                             class="px-3 py-3.5 text-left text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
-                            Destination</th>
+                            Route</th>
                         <th scope="col"
                             class="px-3 py-3.5 text-left text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
                             Status</th>
@@ -52,41 +53,50 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-800">
-                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-200">
-                        <td
-                            class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 dark:text-white sm:pl-6">
-                            <div class="flex items-center gap-x-3">
-                                <img src="https://ui-avatars.com/api/?name=Sarah+Connor&background=ec4899&color=fff"
-                                    alt="" class="h-8 w-8 flex-none rounded-full">
-                                <span>Sarah Connor</span>
-                            </div>
-                        </td>
-                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 dark:text-gray-400">New York, NY
-                        </td>
-                        <td class="whitespace-nowrap px-3 py-4 text-sm">
-                            <span
-                                class="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">Completed</span>
-                        </td>
-                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 dark:text-gray-400">$450.00</td>
-                    </tr>
-                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-200">
-                        <td
-                            class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 dark:text-white sm:pl-6">
-                            <div class="flex items-center gap-x-3">
-                                <img src="https://ui-avatars.com/api/?name=Kyle+Reese&background=3b82f6&color=fff"
-                                    alt="" class="h-8 w-8 flex-none rounded-full">
-                                <span>Kyle Reese</span>
-                            </div>
-                        </td>
-                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 dark:text-gray-400">Los Angeles, CA
-                        </td>
-                        <td class="whitespace-nowrap px-3 py-4 text-sm">
-                            <span
-                                class="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">In
-                                Progress</span>
-                        </td>
-                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 dark:text-gray-400">$320.00</td>
-                    </tr>
+                    @forelse ($recentTrips as $trip)
+                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-200">
+                            <td
+                                class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 dark:text-white sm:pl-6">
+                                <div class="flex items-center gap-x-3">
+                                    <img src="https://ui-avatars.com/api/?name={{ urlencode($trip->vehicle->driver->name ?? 'Unknown') }}&background=random&color=fff"
+                                        alt="" class="h-8 w-8 flex-none rounded-full">
+                                    <div class="flex flex-col">
+                                        <span>{{ $trip->vehicle->driver->name ?? 'Unassigned' }}</span>
+                                        <span class="text-xs text-gray-500">{{ $trip->vehicle->license_plate ?? '' }}</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 dark:text-gray-400">
+                                <div class="flex flex-col">
+                                    <span class="truncate max-w-xs">{{ $trip->pickup_address }}</span>
+                                    <span class="text-xs text-gray-400">to</span>
+                                    <span class="truncate max-w-xs">{{ $trip->dropoff_address }}</span>
+                                </div>
+                            </td>
+                            <td class="whitespace-nowrap px-3 py-4 text-sm">
+                                @php
+                                    $statusClasses = [
+                                        'completed' => 'bg-green-50 text-green-700 ring-green-600/20',
+                                        'active' => 'bg-blue-50 text-blue-700 ring-blue-600/20',
+                                        'pending' => 'bg-yellow-50 text-yellow-800 ring-yellow-600/20',
+                                        'cancelled' => 'bg-red-50 text-red-700 ring-red-600/20',
+                                    ];
+                                    $statusClass = $statusClasses[$trip->status] ?? 'bg-gray-50 text-gray-600 ring-gray-500/10';
+                                @endphp
+                                <span
+                                    class="inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset {{ $statusClass }}">
+                                    {{ ucfirst($trip->status) }}
+                                </span>
+                            </td>
+                            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 dark:text-gray-400">
+                                ${{ number_format($trip->total_price, 2) }}</td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="4" class="px-3 py-4 text-sm text-gray-500 text-center italic">No recent trips
+                                found.</td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>

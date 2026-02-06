@@ -156,6 +156,26 @@
             <div class="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
                 <div class="flex flex-1"></div> <!-- Spacer -->
                 <div class="flex items-center gap-x-4 lg:gap-x-6">
+                    <!-- Driver Online Status (Internet Check) -->
+                    @if(Auth::user()->role === 'driver')
+                        <div x-data="{ online: navigator.onLine }" @online.window="online = true"
+                            @offline.window="online = false" class="flex items-center" x-cloak>
+                            <span x-show="online"
+                                class="inline-flex items-center rounded-md bg-green-50 px-2.5 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20 transition-all duration-300">
+                                <span class="relative flex h-2 w-2 mr-1.5">
+                                    <span
+                                        class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                                    <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                                </span>
+                                Online
+                            </span>
+                            <span x-show="!online"
+                                class="inline-flex items-center rounded-md bg-red-50 px-2.5 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/20 transition-all duration-300">
+                                <i class='bx bx-wifi-off mr-1.5'></i>
+                                Offline
+                            </span>
+                        </div>
+                    @endif
                     <!-- Profile dropdown trigger (static for now) -->
                     <!-- Profile dropdown -->
                     <div class="relative" x-data="{ open: false }">
@@ -186,15 +206,10 @@
                             x-transition:leave-start="transform opacity-100 scale-100"
                             x-transition:leave-end="transform opacity-0 scale-95" x-cloak>
 
-                            <!-- Settings Link -->
-                            <a href="{{ route('settings.edit') }}"
-                                class="block px-3 py-1 text-sm leading-6 text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700"
-                                role="menuitem" tabindex="-1">Settings</a>
-
                             <!-- Profile Link -->
                             <a href="{{ route('profile.edit') }}"
                                 class="block px-3 py-1 text-sm leading-6 text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700"
-                                role="menuitem" tabindex="-1" id="user-menu-item-0">Your Profile</a>
+                                role="menuitem" tabindex="-1" id="user-menu-item-0">My Profile</a>
 
                             <!-- Logout Button -->
                             <button type="button" onclick="confirmLogout()"
@@ -250,26 +265,26 @@
                             })
                         @endif
 
-                        @if (session('error'))
-                            const Toast = Swal.mixin({
-                                toast: true,
-                                position: 'top-end',
-                                showConfirmButton: false,
-                                timer: 3000,
-                                timerProgressBar: true,
-                                didOpen: (toast) => {
-                                    toast.addEventListener('mouseenter', Swal.stopTimer)
-                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
-                                }
-                            })
+                            @if (session('error'))
+                                const Toast = Swal.mixin({
+                                    toast: true,
+                                    position: 'top-end',
+                                    showConfirmButton: false,
+                                    timer: 3000,
+                                    timerProgressBar: true,
+                                    didOpen: (toast) => {
+                                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                    }
+                                })
 
-                            Toast.fire({
-                                icon: 'error',
-                                title: "{{ session('error') }}",
-                                background: document.documentElement.classList.contains('dark') ? '#1f2937' : '#fff',
-                                color: document.documentElement.classList.contains('dark') ? '#fff' : '#1f2937'
-                            })
-                        @endif
+                                Toast.fire({
+                                    icon: 'error',
+                                    title: "{{ session('error') }}",
+                                    background: document.documentElement.classList.contains('dark') ? '#1f2937' : '#fff',
+                                    color: document.documentElement.classList.contains('dark') ? '#fff' : '#1f2937'
+                                })
+                            @endif
                     </script>
                 </div>
             </div>

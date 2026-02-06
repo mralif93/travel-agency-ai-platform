@@ -16,6 +16,13 @@ class UserController extends Controller
     {
         $query = User::latest();
 
+        // Scope for Company Admin
+        if (auth()->user()->role === 'company') {
+            $query->where('company_id', auth()->user()->company_id);
+            // Hide SuperAdmins/Admins from Company view if necessary, usually they only want to see their drivers/staff
+            // Let's assume they see everyone linked to their company_id
+        }
+
         // Search
         if ($request->filled('search')) {
             $search = $request->input('search');
@@ -30,8 +37,8 @@ class UserController extends Controller
             $query->where('role', $request->input('role'));
         }
 
-        // Filter by Company
-        if ($request->filled('company_id')) {
+        // Filter by Company (Only for SuperAdmin)
+        if (auth()->user()->role !== 'company' && $request->filled('company_id')) {
             $query->where('company_id', $request->input('company_id'));
         }
 
@@ -46,7 +53,8 @@ class UserController extends Controller
      */
     public function create()
     {
-        return view('users.create');
+        $companies = \App\Models\Company::orderBy('name')->get();
+        return view('users.create', compact('companies'));
     }
 
     /**
@@ -54,18 +62,30 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+        $isCompanyAdmin = auth()->user()->role === 'company';
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'role' => 'required|string|in:superadmin,admin,driver,company',
+            'role' => $isCompanyAdmin ? 'nullable|string' : 'required|string|in:superadmin,admin,driver,company',
             'password' => 'required|string|min:8|confirmed',
+            'company_id' => $isCompanyAdmin ? 'nullable' : 'nullable|exists:companies,id',
         ]);
+
+        $role = $validated['role'];
+        $companyId = $request->company_id;
+
+        if ($isCompanyAdmin) {
+            $role = 'driver'; // Auto-assign driver role for company created users
+            $companyId = auth()->user()->company_id;
+        }
 
         $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
-            'role' => $validated['role'],
+            'role' => $role,
             'password' => Hash::make($validated['password']),
+            'company_id' => $companyId,
         ]);
 
         return redirect()->route('users.index')->with('success', 'User created successfully.');
@@ -76,6 +96,11 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
+        // Authorization check for Company Admin
+        if (auth()->user()->role === 'company' && $user->company_id !== auth()->user()->company_id) {
+            abort(403, 'Unauthorized action.');
+        }
+
         return view('users.show', compact('user'));
     }
 
@@ -84,7 +109,13 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        return view('users.edit', compact('user'));
+        // Authorization check for Company Admin
+        if (auth()->user()->role === 'company' && $user->company_id !== auth()->user()->company_id) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $companies = \App\Models\Company::orderBy('name')->get();
+        return view('users.edit', compact('user', 'companies'));
     }
 
     /**
@@ -92,24 +123,36 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
+        // Authorization check for Company Admin
+        if (auth()->user()->role === 'company' && $user->company_id !== auth()->user()->company_id) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $isCompanyAdmin = auth()->user()->role === 'company';
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
-            'role' => 'required|string|in:superadmin,admin,driver,company',
+            'role' => $isCompanyAdmin ? 'nullable|string' : 'required|string|in:superadmin,admin,driver,company',
             'password' => 'nullable|string|min:8|confirmed',
+            'company_id' => $isCompanyAdmin ? 'nullable' : 'nullable|exists:companies,id',
         ]);
 
-        $user->fill([
+        $data = [
             'name' => $validated['name'],
             'email' => $validated['email'],
-            'role' => $validated['role'],
-        ]);
+        ];
 
-        if ($request->filled('password')) {
-            $user->password = Hash::make($validated['password']);
+        if (!$isCompanyAdmin) {
+            $data['role'] = $validated['role'];
+            $data['company_id'] = $request->company_id;
         }
 
-        $user->save();
+        if ($request->filled('password')) {
+            $data['password'] = Hash::make($validated['password']);
+        }
+
+        $user->update($data);
 
         return redirect()->route('users.index')->with('success', 'User updated successfully.');
     }
@@ -121,6 +164,11 @@ class UserController extends Controller
     {
         if ($user->id === auth()->id()) {
             return back()->with('error', 'You cannot delete yourself.');
+        }
+
+        // Authorization check for Company Admin
+        if (auth()->user()->role === 'company' && $user->company_id !== auth()->user()->company_id) {
+            abort(403, 'Unauthorized action.');
         }
 
         $user->delete();

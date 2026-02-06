@@ -3,13 +3,13 @@
         <div class="sm:flex-auto">
             <h1 class="text-2xl font-semibold leading-6 text-gray-900 dark:text-white">Users</h1>
             <p class="mt-2 text-sm text-gray-700 dark:text-gray-400">A list of all the users in your account including
-                their
-                name, title, email and role.</p>
+                their name, title, email and role.</p>
         </div>
         <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
             <a href="{{ route('users.create') }}"
-                class="block rounded-md bg-primary-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-primary-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600">Add
-                User</a>
+                class="block rounded-md bg-primary-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-primary-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600">
+                <i class='bx bx-plus align-middle mr-1'></i>Create User
+            </a>
         </div>
     </div>
 
@@ -55,20 +55,22 @@
                         </div>
 
                         <!-- Company Filter -->
-                        <div class="w-full sm:w-52 text-sm">
-                            <label for="company_id"
-                                class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Company</label>
-                            <select name="company_id" id="company_id"
-                                style="background-image: url(&quot;data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e&quot;); background-position: right 1rem center; background-repeat: no-repeat; background-size: 1.5em 1.5em; padding-right: 2.5rem !important;"
-                                class="block w-full appearance-none rounded-md border-0 py-1.5 pl-3 text-gray-900 dark:text-gray-100 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 focus:ring-2 focus:ring-inset focus:ring-primary-600 sm:text-sm sm:leading-6 dark:bg-gray-900 h-10">
-                                <option value="">All Companies</option>
-                                @foreach($companies as $company)
-                                    <option value="{{ $company->id }}" {{ request('company_id') == $company->id ? 'selected' : '' }}>
-                                        {{ Str::limit($company->name, 20) }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
+                        @if(auth()->user()->role !== 'company')
+                            <div class="w-full sm:w-52 text-sm">
+                                <label for="company_id"
+                                    class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Company</label>
+                                <select name="company_id" id="company_id"
+                                    style="background-image: url(&quot;data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e&quot;); background-position: right 1rem center; background-repeat: no-repeat; background-size: 1.5em 1.5em; padding-right: 2.5rem !important;"
+                                    class="block w-full appearance-none rounded-md border-0 py-1.5 pl-3 text-gray-900 dark:text-gray-100 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 focus:ring-2 focus:ring-inset focus:ring-primary-600 sm:text-sm sm:leading-6 dark:bg-gray-900 h-10">
+                                    <option value="">All Companies</option>
+                                    @foreach($companies as $company)
+                                        <option value="{{ $company->id }}" {{ request('company_id') == $company->id ? 'selected' : '' }}>
+                                            {{ Str::limit($company->name, 20) }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        @endif
 
                         <!-- Actions -->
                         <button type="submit"
@@ -139,6 +141,7 @@
                                                 <i class='bx bx-pencil text-xl'></i><span class="sr-only">Edit,
                                                     {{ $user->name }}</span>
                                             </a>
+                                            @if(auth()->id() !== $user->id)
                                             <form action="{{ route('users.destroy', $user) }}" method="POST"
                                                 class="inline-block">
                                                 @csrf
@@ -150,17 +153,16 @@
                                                         {{ $user->name }}</span>
                                                 </button>
                                             </form>
+                                            @endif
                                         </div>
                                     </td>
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
+                    <x-card-pagination :items="$users" />
                 </div>
             </div>
-        </div>
-        <div class="mt-4 px-4 sm:px-6 lg:px-8">
-            {{ $users->links() }}
         </div>
     </div>
 </x-app-layout>

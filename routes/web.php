@@ -11,6 +11,10 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\CustomerAuthController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -26,35 +30,40 @@ Route::controller(PublicController::class)->group(function () {
 });
 
 Route::middleware('guest')->group(function () {
-    Route::get('login', [AuthController::class, 'showLogin'])->name('login');
-    Route::post('login', [AuthController::class, 'login']);
-    Route::get('forgot-password', [AuthController::class, 'showLinkRequestForm'])->name('password.request');
+    // Customer Auth (Default Root)
+    Route::get('login', [CustomerAuthController::class, 'showLoginForm'])->name('login');
+    Route::post('login', [CustomerAuthController::class, 'login']);
+    Route::get('register', [CustomerAuthController::class, 'showRegisterForm'])->name('register');
+    Route::post('register', [CustomerAuthController::class, 'register']);
+
+    // Admin/Staff Auth
+    Route::prefix('admin')->group(function () {
+        Route::get('login', [AuthController::class, 'showLogin'])->name('admin.login');
+        Route::post('login', [AuthController::class, 'login']);
+        Route::get('forgot-password', [AuthController::class, 'showLinkRequestForm'])->name('password.request');
+    });
 });
 
 Route::middleware('auth')->group(function () {
     Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 
-    // Default Dashboard
+    // Default Dashboard (Fallback)
     Route::get('dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
 
-    // Role-based Dashboards
-    Route::get('dashboard/superadmin', function () {
+    // Role-based Dashboards (Explicit Paths)
+    Route::get('admin/dashboard/super', function () {
         return view('dashboard.superadmin');
     })->name('dashboard.superadmin');
 
-    Route::get('dashboard/admin', function () {
+    Route::get('admin/dashboard', function () {
         return view('dashboard.admin');
     })->name('dashboard.admin');
 
-    Route::get('dashboard/driver', function () {
-        return view('dashboard.driver');
-    })->name('dashboard.driver');
+    Route::get('driver/dashboard', [DashboardController::class, 'driver'])->name('dashboard.driver');
 
-    Route::get('dashboard/company', function () {
-        return view('dashboard.company');
-    })->name('dashboard.company');
+    Route::get('company/dashboard', [DashboardController::class, 'company'])->name('dashboard.company');
 
     // Profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -74,6 +83,26 @@ Route::middleware('auth')->group(function () {
     Route::resource('vehicles', VehicleController::class);
 
     // Order Management
+    Route::post('orders/{order}/verify', [OrderController::class, 'verify'])->name('orders.verify');
     Route::resource('orders', OrderController::class);
+
+    // Company Management
+    Route::resource('companies', CompanyController::class);
+
+    // Invoice Management
+    Route::resource('invoices', InvoiceController::class);
 });
+
+// Customer Dashboard Route
+Route::middleware('auth:customer')->group(function () {
+    Route::get('customer/dashboard', [DashboardController::class, 'customer'])->name('dashboard.customer');
+    Route::get('customer/trips', [DashboardController::class, 'trips'])->name('customer.trips');
+    Route::get('customer/trips/{order}', [DashboardController::class, 'showTrip'])->name('customer.trips.show');
+    Route::get('customer/trips/{order}/print', [DashboardController::class, 'printTrip'])->name('customer.trips.print');
+    Route::post('customer/logout', [CustomerAuthController::class, 'logout'])->name('customer.logout');
+});
+
+// Redirect root to customer login if not auth, or landing page
+// Keep existing root
+
 
