@@ -298,7 +298,7 @@
             <!-- Right Column: QR & Payment -->
             <div class="space-y-6">
                 <!-- QR Code Card -->
-                <div
+                <div id="qr-code"
                     class="bg-white dark:bg-gray-800 rounded-3xl shadow-sm ring-1 ring-gray-900/5 dark:ring-gray-700 p-6 text-center">
                     <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-2">Driver Scan</h2>
                     <p class="text-sm text-gray-500 dark:text-gray-400 mb-6 px-4">Show this QR code to the driver upon

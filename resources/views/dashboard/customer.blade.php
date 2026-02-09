@@ -53,7 +53,8 @@
         </div>
 
         <!-- Recent Orders List -->
-        <div class="bg-white dark:bg-gray-800 shadow-sm ring-1 ring-gray-900/5 dark:ring-gray-700/40 sm:rounded-xl">
+        <div
+            class="overflow-hidden bg-white dark:bg-gray-800 shadow-sm ring-1 ring-gray-900/5 dark:ring-gray-700/40 sm:rounded-xl">
             <div class="border-b border-gray-100 dark:border-gray-700 px-4 py-5 sm:px-6">
                 <h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-white">Recent Orders</h3>
             </div>
@@ -103,17 +104,42 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="flex items-center gap-x-3 mt-1">
+                            <div class="relative z-10 flex items-center gap-x-3 mt-1">
                                 <a href="{{ route('customer.trips.show', $order) }}"
                                     class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" title="View Details">
                                     <i class='bx bx-detail text-lg'></i>
                                 </a>
-                                <a href="{{ route('customer.trips.show', $order) }}"
-                                    class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" title="QR Code">
+                                <button type="button" onclick="showQrCode('{{ $order->id }}')"
+                                    class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                                    title="QR Code">
                                     <i class='bx bx-qr text-lg'></i>
-                                </a>
-                                <a href="#" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
-                                    title="Preview PDF">
+                                </button>
+
+                                <!-- Hidden QR Code Content -->
+                                <div id="qr-content-{{ $order->id }}" class="hidden">
+                                    <div class="flex flex-col items-center justify-center p-2 text-center">
+                                        <div
+                                            class="bg-white p-2 rounded-lg border border-gray-100 shadow-sm inline-block mb-4">
+                                            {!! QrCode::size(200)->color(0, 0, 0)->generate($order->id) !!}
+                                        </div>
+                                        <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Scan this code to verify
+                                            your trip</p>
+
+                                        <div class="w-full border-t border-gray-100 dark:border-gray-700 pt-4 mt-2">
+                                            <p
+                                                class="text-xs font-mono font-bold text-gray-400 uppercase tracking-wider mb-1">
+                                                Order #{{ substr($order->id, 0, 8) }}</p>
+                                            <div class="flex flex-col gap-1 text-sm text-gray-900 dark:text-gray-200">
+                                                <span class="truncate w-full px-4">{{ $order->pickup_address }}</span>
+                                                <i class='bx bx-down-arrow-alt text-gray-400'></i>
+                                                <span class="truncate w-full px-4">{{ $order->dropoff_address }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <a href="{{ route('customer.trips.print', $order) }}" target="_blank"
+                                    class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" title="Preview PDF">
                                     <i class='bx bxs-file-pdf text-lg'></i>
                                 </a>
                             </div>
@@ -135,4 +161,20 @@
             {{ $orders->links() }}
         </div>
     </div>
+    <script>
+        function showQrCode(orderId) {
+            const content = document.getElementById('qr-content-' + orderId).innerHTML;
+
+            Swal.fire({
+                title: 'Driver Scan',
+                html: content,
+                showConfirmButton: false,
+                showCloseButton: true,
+                width: 400,
+                padding: '1.5em',
+                background: document.documentElement.classList.contains('dark') ? '#1f2937' : '#fff',
+                color: document.documentElement.classList.contains('dark') ? '#fff' : '#1f2937'
+            });
+        }
+    </script>
 </x-customer-layout>

@@ -95,4 +95,16 @@ class CustomerController extends Controller
 
         return redirect()->route('customers.index')->with('success', 'Customer deleted successfully.');
     }
+
+    /**
+     * Reset the customer's password to default.
+     */
+    public function resetPassword(Customer $customer)
+    {
+        $customer->update([
+            'password' => \Illuminate\Support\Facades\Hash::make('P@ssw0rd123'),
+        ]);
+
+        return back()->with('success', 'Password has been reset to default: P@ssw0rd123');
+    }
 }

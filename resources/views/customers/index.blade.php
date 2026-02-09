@@ -96,6 +96,16 @@
                                                 <i class='bx bx-pencil text-xl'></i><span class="sr-only">Edit,
                                                     {{ $customer->name }}</span>
                                             </a>
+                                            <form action="{{ route('customers.reset-password', $customer) }}" method="POST"
+                                                class="inline-block" id="reset-form-{{ $customer->id }}">
+                                                @csrf
+                                                <button type="button"
+                                                    class="text-orange-600 hover:text-orange-900 dark:text-orange-400 dark:hover:text-orange-300 transition-colors"
+                                                    onclick="confirmResetPassword('reset-form-{{ $customer->id }}')">
+                                                    <i class='bx bx-refresh text-xl'></i><span class="sr-only">Reset Password,
+                                                        {{ $customer->name }}</span>
+                                                </button>
+                                            </form>
                                             <form action="{{ route('customers.destroy', $customer) }}" method="POST"
                                                 class="inline-block">
                                                 @csrf
@@ -118,4 +128,26 @@
             </div>
         </div>
     </div>
+    </div>
+
+    <script>
+        function confirmResetPassword(formId) {
+            Swal.fire({
+                title: 'Reset Password?',
+                text: "This will reset the customer's password to the default: P@ssw0rd123",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ea580c', // Orange-600
+                cancelButtonColor: '#6b7280', // Gray-500
+                confirmButtonText: 'Yes, reset it!',
+                cancelButtonText: 'Cancel',
+                background: document.documentElement.classList.contains('dark') ? '#1f2937' : '#fff',
+                color: document.documentElement.classList.contains('dark') ? '#fff' : '#1f2937'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById(formId).submit();
+                }
+            })
+        }
+    </script>
 </x-app-layout>

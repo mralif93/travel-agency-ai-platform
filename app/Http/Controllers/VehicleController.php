@@ -67,6 +67,7 @@ class VehicleController extends Controller
         $validated = $request->validate([
             'make' => 'required|string|max:255',
             'model' => 'required|string|max:255',
+            'type' => 'required|in:sedan,mpv,van,bus,luxury',
             'year' => 'required|string|max:4',
             'license_plate' => 'required|string|max:20|unique:vehicles',
             'capacity' => 'required|integer|min:1',
@@ -122,6 +123,7 @@ class VehicleController extends Controller
         $rules = [
             'make' => 'required|string|max:255',
             'model' => 'required|string|max:255',
+            'type' => 'required|in:sedan,mpv,van,bus,luxury',
             'year' => 'required|string|max:4',
             'license_plate' => ['required', 'string', 'max:20', Rule::unique('vehicles')->ignore($vehicle->id)],
             'capacity' => 'required|integer|min:1',

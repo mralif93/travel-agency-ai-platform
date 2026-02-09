@@ -104,7 +104,13 @@
                                         {{ $vehicle->license_plate }}
                                     </td>
                                     <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 dark:text-gray-400">
-                                        {{ $vehicle->year }} • {{ $vehicle->capacity }} Seats
+                                        <div class="flex flex-col">
+                                            <span>{{ $vehicle->year }} • {{ $vehicle->capacity }} Seats</span>
+                                            <span
+                                                class="inline-flex items-center rounded-md bg-blue-50 px-1.5 py-0.5 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10 mt-1 w-fit capitalize">
+                                                {{ $vehicle->type }}
+                                            </span>
+                                        </div>
                                     </td>
                                     <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 dark:text-gray-400">
                                         @php

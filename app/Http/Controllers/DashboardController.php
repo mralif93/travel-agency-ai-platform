@@ -149,9 +149,12 @@ class DashboardController extends Controller
             abort(403);
         }
 
-        $order->load(['vehicle.driver', 'invoice']);
+        $order->load(['vehicle.driver', 'invoice', 'customer']);
 
-        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pdf.trip', compact('order', 'user'));
+        // Generate QR for PDF (Same as BookingController)
+        $qrCode = base64_encode(\SimpleSoftwareIO\QrCode\Facades\QrCode::format('svg')->size(100)->generate(route('booking.confirmation', $order->id)));
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pdf.invoice', compact('order', 'qrCode'));
 
         return $pdf->stream('trip-details-' . $order->id . '.pdf');
     }

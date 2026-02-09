@@ -7,6 +7,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicController;
+use App\Http\Controllers\BookingController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\SettingsController;
@@ -22,7 +23,10 @@ Route::get('/', function () {
 
 
 Route::controller(PublicController::class)->group(function () {
-    Route::get('transport-rates', 'transportRates')->name('transport-rates');
+    Route::get('/transport-rates', [PublicController::class, 'transportRates'])->name('transport-rates');
+    Route::post('/book', [BookingController::class, 'store'])->name('book.store');
+    Route::get('/booking/{id}', [BookingController::class, 'show'])->name('booking.confirmation');
+    Route::get('/booking/{id}/invoice', [BookingController::class, 'downloadInvoice'])->name('booking.invoice');
     Route::get('tour-packages', 'tourPackages')->name('tour-packages');
     Route::get('attractions', 'attractions')->name('attractions');
     Route::get('about', 'about')->name('about');
@@ -77,6 +81,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('users', UserController::class);
 
     // Customer Management
+    Route::post('customers/{customer}/reset-password', [CustomerController::class, 'resetPassword'])->name('customers.reset-password');
     Route::resource('customers', CustomerController::class);
 
     // Vehicle Management

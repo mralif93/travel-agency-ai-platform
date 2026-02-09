@@ -15,6 +15,7 @@ class Vehicle extends Model
         'user_id',
         'make',
         'model',
+        'type',
         'year',
         'license_plate',
         'capacity',

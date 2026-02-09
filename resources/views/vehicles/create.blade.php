@@ -39,6 +39,29 @@
                         </div>
                     </div>
 
+                    <!-- Type -->
+                    <div class="sm:col-span-3">
+                        <label for="type"
+                            class="block text-sm font-medium leading-6 text-gray-900 dark:text-white">Type</label>
+                        <div class="mt-2 relative">
+                            <select id="type" name="type"
+                                class="block w-full appearance-none rounded-md border-0 py-2.5 pl-3 pr-10 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-primary-600 sm:text-sm sm:leading-6 dark:bg-gray-900 dark:text-white dark:ring-gray-700">
+                                <option value="sedan" {{ old('type') == 'sedan' ? 'selected' : '' }}>Sedan</option>
+                                <option value="mpv" {{ old('type') == 'mpv' ? 'selected' : '' }}>MPV</option>
+                                <option value="van" {{ old('type') == 'van' ? 'selected' : '' }}>Van</option>
+                                <option value="bus" {{ old('type') == 'bus' ? 'selected' : '' }}>Bus</option>
+                                <option value="luxury" {{ old('type') == 'luxury' ? 'selected' : '' }}>Luxury</option>
+                            </select>
+                            <div
+                                class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
+                                <i class='bx bx-chevron-down text-lg'></i>
+                            </div>
+                            @error('type')
+                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    </div>
+
                     <!-- License Plate -->
                     <div class="sm:col-span-3">
                         <label for="license_plate"

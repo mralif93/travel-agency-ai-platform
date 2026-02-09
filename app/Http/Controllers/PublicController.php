@@ -9,7 +9,8 @@ class PublicController extends Controller
 {
     public function transportRates()
     {
-        return view('public.transport-rates');
+        $vehicles = \App\Models\Vehicle::where('status', 'active')->get();
+        return view('public.transport-rates', compact('vehicles'));
     }
 
     public function tourPackages()

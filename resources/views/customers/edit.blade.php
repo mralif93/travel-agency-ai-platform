@@ -67,13 +67,47 @@
         </div>
 
         <div
-            class="flex items-center justify-end gap-x-6 border-t border-gray-900/10 dark:border-gray-700 px-4 py-4 sm:px-8">
-            <a href="{{ route('customers.index') }}"
-                class="text-sm font-semibold leading-6 text-gray-900 dark:text-white">Cancel</a>
-            <button type="submit"
-                class="rounded-md bg-primary-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600">Save</button>
+            class="flex items-center justify-between border-t border-gray-900/10 dark:border-gray-700 px-4 py-4 sm:px-8">
+
+            <!-- Reset Password Button -->
+            <form action="{{ route('customers.reset-password', $customer) }}" method="POST" class="inline-block"
+                id="reset-password-form">
+                @csrf
+                <button type="button" class="text-sm font-semibold leading-6 text-red-600 hover:text-red-500"
+                    onclick="confirmResetPassword()">
+                    Reset Password
+                </button>
+            </form>
+
+            <div class="flex items-center gap-x-6">
+                <a href="{{ route('customers.index') }}"
+                    class="text-sm font-semibold leading-6 text-gray-900 dark:text-white">Cancel</a>
+                <button type="submit"
+                    class="rounded-md bg-primary-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600">Save</button>
+            </div>
         </div>
         </form>
     </div>
     </div>
 </x-app-layout>
+
+<script>
+    function confirmResetPassword() {
+        Swal.fire({
+            title: 'Reset Password?',
+            text: "This will reset the customer's password to the default: P@ssw0rd123",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ea580c', // Orange-600
+            cancelButtonColor: '#6b7280', // Gray-500
+            confirmButtonText: 'Yes, reset it!',
+            cancelButtonText: 'Cancel',
+            background: document.documentElement.classList.contains('dark') ? '#1f2937' : '#fff',
+            color: document.documentElement.classList.contains('dark') ? '#fff' : '#1f2937'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('reset-password-form').submit();
+            }
+        })
+    }
+</script>
