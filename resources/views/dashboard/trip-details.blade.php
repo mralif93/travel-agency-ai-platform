@@ -28,12 +28,11 @@
                 </div>
             </div>
             <div class="flex items-center gap-3">
-                <button
-                    onclick="window.open('{{ route('customer.trips.print', $order) }}', '_blank', 'width=800,height=600')"
+                <a href="{{ route('customer.trips.print', $order) }}" target="_blank"
                     class="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-xl text-sm font-semibold text-gray-700 dark:text-gray-200 shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-all">
                     <i class='bx bx-printer text-lg'></i>
                     <span>Print Ticket</span>
-                </button>
+                </a>
                 @if($order->invoice)
                     <a href="#"
                         class="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 border border-transparent rounded-xl text-sm font-semibold text-white shadow-sm hover:bg-primary-500 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-600 transition-all">

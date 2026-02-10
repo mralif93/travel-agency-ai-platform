@@ -200,15 +200,18 @@
 
                     <div class="hidden sm:flex items-center gap-4">
                         @if (Route::has('login'))
-                            @auth
+                            @if(Auth::guard('customer')->check())
+                                <a href="{{ route('dashboard.customer') }}"
+                                    class="inline-flex items-center px-5 py-2.5 border border-transparent text-sm font-medium rounded-xl text-white bg-primary-600 hover:bg-primary-700 dark:bg-white/10 dark:hover:bg-white/20 dark:border-white/10 transition-all duration-200 backdrop-blur-sm shadow-md dark:shadow-none">Dashboard</a>
+                            @elseif(Auth::check())
                                 <a href="{{ url('/dashboard') }}"
-                                    class="font-semibold text-gray-700 hover:text-primary-600 dark:text-gray-300 dark:hover:text-white transition-colors">Dashboard</a>
+                                    class="inline-flex items-center px-5 py-2.5 border border-transparent text-sm font-medium rounded-xl text-white bg-primary-600 hover:bg-primary-700 dark:bg-white/10 dark:hover:bg-white/20 dark:border-white/10 transition-all duration-200 backdrop-blur-sm shadow-md dark:shadow-none">Dashboard</a>
                             @else
                                 <a href="{{ route('login') }}"
                                     class="inline-flex items-center px-5 py-2.5 border border-transparent text-sm font-medium rounded-xl text-white bg-primary-600 hover:bg-primary-700 dark:bg-white/10 dark:hover:bg-white/20 dark:border-white/10 transition-all duration-200 backdrop-blur-sm shadow-md dark:shadow-none">
                                     Log in
                                 </a>
-                            @endauth
+                            @endif
                         @endif
                     </div>
 
@@ -259,15 +262,18 @@
                 <div class="border-t border-gray-100 dark:border-gray-700 my-2"></div>
 
                 @if (Route::has('login'))
-                    @auth
+                    @if(Auth::guard('customer')->check())
+                        <a href="{{ route('dashboard.customer') }}"
+                            class="block w-full text-center mt-4 px-5 py-3 rounded-xl font-medium text-white bg-primary-600 hover:bg-primary-700 shadow-md">Dashboard</a>
+                    @elseif(Auth::check())
                         <a href="{{ url('/dashboard') }}"
-                            class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-200 hover:text-primary-600 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800">Dashboard</a>
+                            class="block w-full text-center mt-4 px-5 py-3 rounded-xl font-medium text-white bg-primary-600 hover:bg-primary-700 shadow-md">Dashboard</a>
                     @else
                         <a href="{{ route('login') }}"
                             class="block w-full text-center mt-4 px-5 py-3 rounded-xl font-medium text-white bg-primary-600 hover:bg-primary-700 shadow-md">
                             Log in
                         </a>
-                    @endauth
+                    @endif
                 @endif
             </div>
         </div>
