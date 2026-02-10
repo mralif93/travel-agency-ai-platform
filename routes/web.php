@@ -104,6 +104,11 @@ Route::middleware('auth:customer')->group(function () {
     Route::get('customer/trips', [DashboardController::class, 'trips'])->name('customer.trips');
     Route::get('customer/trips/{order}', [DashboardController::class, 'showTrip'])->name('customer.trips.show');
     Route::get('customer/trips/{order}/print', [DashboardController::class, 'printTrip'])->name('customer.trips.print');
+
+    // Profile Routes
+    Route::get('customer/profile', [\App\Http\Controllers\CustomerProfileController::class, 'edit'])->name('customer.profile.edit');
+    Route::patch('customer/profile', [\App\Http\Controllers\CustomerProfileController::class, 'update'])->name('customer.profile.update');
+
     Route::post('customer/logout', [CustomerAuthController::class, 'logout'])->name('customer.logout');
 });
 

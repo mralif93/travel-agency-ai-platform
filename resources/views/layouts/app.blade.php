@@ -243,48 +243,7 @@
                             })
                         }
 
-                        // Flash Messages
-                        @if (session('success'))
-                            const Toast = Swal.mixin({
-                                toast: true,
-                                position: 'top-end',
-                                showConfirmButton: false,
-                                timer: 3000,
-                                timerProgressBar: true,
-                                didOpen: (toast) => {
-                                    toast.addEventListener('mouseenter', Swal.stopTimer)
-                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
-                                }
-                            })
-
-                            Toast.fire({
-                                icon: 'success',
-                                title: "{{ session('success') }}",
-                                background: document.documentElement.classList.contains('dark') ? '#1f2937' : '#fff',
-                                color: document.documentElement.classList.contains('dark') ? '#fff' : '#1f2937'
-                            })
-                        @endif
-
-                            @if (session('error'))
-                                const Toast = Swal.mixin({
-                                    toast: true,
-                                    position: 'top-end',
-                                    showConfirmButton: false,
-                                    timer: 3000,
-                                    timerProgressBar: true,
-                                    didOpen: (toast) => {
-                                        toast.addEventListener('mouseenter', Swal.stopTimer)
-                                        toast.addEventListener('mouseleave', Swal.resumeTimer)
-                                    }
-                                })
-
-                                Toast.fire({
-                                    icon: 'error',
-                                    title: "{{ session('error') }}",
-                                    background: document.documentElement.classList.contains('dark') ? '#1f2937' : '#fff',
-                                    color: document.documentElement.classList.contains('dark') ? '#fff' : '#1f2937'
-                                })
-                            @endif
+                        @include('components.sweetalert')
                     </script>
                 </div>
             </div>

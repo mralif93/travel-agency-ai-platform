@@ -33,6 +33,7 @@
             {{ $slot }}
         </div>
     </div>
+    @include('components.sweetalert')
 </body>
 
 </html>

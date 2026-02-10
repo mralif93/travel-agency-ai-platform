@@ -7,21 +7,7 @@
         </div>
     </div>
 
-    @if (session('status') === 'profile-updated')
-        <script>
-            document.addEventListener('DOMContentLoaded', () => {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Saved!',
-                    text: 'Your profile has been updated.',
-                    timer: 2000,
-                    showConfirmButton: false,
-                    background: document.documentElement.classList.contains('dark') ? '#1f2937' : '#fff',
-                    color: document.documentElement.classList.contains('dark') ? '#fff' : '#1f2937'
-                });
-            });
-        </script>
-    @endif
+
 
     <form method="post" action="{{ route('profile.update') }}">
         @csrf

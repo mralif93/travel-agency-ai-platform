@@ -102,7 +102,7 @@
                                         {{ Auth::guard('customer')->user()->email }}
                                     </p>
                                 </div>
-                                <a href="#"
+                                <a href="{{ route('customer.profile.edit') }}"
                                     class="group flex items-center px-4 py-2 text-sm text-gray-600 dark:text-gray-300 hover:bg-primary-50 dark:hover:bg-primary-900/10 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
                                     role="menuitem" tabindex="-1" id="user-menu-item-0">
                                     <i
@@ -175,7 +175,7 @@
                         </div>
                     </div>
                     <div class="mt-3 space-y-1">
-                        <a href="#"
+                        <a href="{{ route('customer.profile.edit') }}"
                             class="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800">Your
                             Profile</a>
                         <a href="#"
@@ -231,6 +231,7 @@
             })
         }
     </script>
+    @include('components.sweetalert')
 </body>
 
 </html>
