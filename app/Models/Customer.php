@@ -16,10 +16,27 @@ class Customer extends Authenticatable
         'phone',
         'address',
         'password',
+        'theme_mode',
+        'theme_color',
+        'force_password_change',
     ];
 
     protected $hidden = [
         'password',
         'remember_token',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+            'force_password_change' => 'boolean',
+        ];
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
 }

@@ -1,5 +1,11 @@
 @php
-    $userTheme = Auth::check() ? Auth::user()->theme_color : 'primary';
+    if (Auth::check()) {
+        $userTheme = Auth::user()->theme_color ?? 'primary';
+    } elseif (Auth::guard('customer')->check()) {
+        $userTheme = Auth::guard('customer')->user()->theme_color ?? 'primary';
+    } else {
+        $userTheme = 'primary';
+    }
     $themeColor = $userTheme === 'indigo' ? 'primary' : $userTheme;
     $colors = [
         'primary' => [

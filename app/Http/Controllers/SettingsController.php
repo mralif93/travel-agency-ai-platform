@@ -23,11 +23,15 @@ class SettingsController extends Controller
     public function update(Request $request)
     {
         $validated = $request->validate([
-            'theme_mode' => ['required', 'string', 'in:light,dark,system'],
-            'theme_color' => ['required', 'string', 'in:primary,rose,blue,green,orange,violet'],
+            'theme_mode' => ['sometimes', 'string', 'in:light,dark,system'],
+            'theme_color' => ['sometimes', 'string', 'in:primary,rose,blue,green,orange,violet'],
         ]);
 
         $request->user()->update($validated);
+
+        if ($request->has('theme_mode') && !$request->has('theme_color')) {
+            return response()->json(['success' => true]);
+        }
 
         return Redirect::route('settings.edit')->with('status', 'settings-updated');
     }

@@ -26,9 +26,22 @@ class CustomerProfileController extends Controller
     {
         $user = Auth::guard('customer')->user();
 
+        if ($request->has('theme_mode')) {
+            $validated = $request->validate([
+                'theme_mode' => ['required', 'in:light,dark,system'],
+            ]);
+
+            $user->theme_mode = $validated['theme_mode'];
+            $user->save();
+
+            return response()->json(['success' => true]);
+        }
+
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('customers', 'email')->ignore($user->id)],
+            'phone' => ['nullable', 'string', 'max:20'],
+            'address' => ['nullable', 'string', 'max:500'],
             'current_password' => ['nullable', 'required_with:password', 'current_password:customer'],
             'password' => ['nullable', 'required_with:current_password', 'confirmed', 'min:8'],
         ]);
@@ -36,9 +49,10 @@ class CustomerProfileController extends Controller
         $user->fill([
             'name' => $validated['name'],
             'email' => $validated['email'],
+            'phone' => $validated['phone'] ?? $user->phone,
+            'address' => $validated['address'] ?? $user->address,
         ]);
 
-        // Update password if provided
         if (isset($validated['password'])) {
             $user->password = Hash::make($validated['password']);
         }

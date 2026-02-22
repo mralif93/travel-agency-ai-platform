@@ -24,6 +24,8 @@ class Order extends Model
         'total_price',
         'status',
         'scheduled_at',
+        'flight_number',
+        'remarks',
     ];
 
     protected $casts = [

@@ -243,6 +243,8 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         function confirmDelete(id) {
+            var isDark = document.documentElement.classList.contains('dark');
+            
             Swal.fire({
                 title: 'Are you sure?',
                 text: "You won't be able to revert this!",
@@ -250,12 +252,18 @@
                 showCancelButton: true,
                 confirmButtonColor: '#ef4444',
                 cancelButtonColor: '#6b7280',
-                confirmButtonText: 'Yes, delete it!'
-            }).then((result) => {
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'Cancel',
+                reverseButtons: true,
+                background: isDark ? '#1f2937' : '#fff',
+                color: isDark ? '#f3f4f6' : '#1f2937',
+                width: '380px',
+                padding: '24px'
+            }).then(function(result) {
                 if (result.isConfirmed) {
                     document.getElementById('delete-form-' + id).submit();
                 }
-            })
+            });
         }
     </script>
 </x-app-layout>

@@ -105,8 +105,11 @@
                                 <th scope="col"
                                     class="px-3 py-3.5 text-left text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
                                     Role</th>
+                                <th scope="col"
+                                    class="px-3 py-3.5 text-left text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                                    Password</th>
                                 <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
-                                    <span class="sr-only">Edit</span>
+                                    <span class="sr-only">Actions</span>
                                 </th>
                             </tr>
                         </thead>
@@ -126,11 +129,33 @@
                                     </td>
                                     <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 dark:text-gray-400">
                                         <span
-                                            class="inline-flex items-center rounded-md bg-primary-50 px-2 py-1 text-xs font-medium text-primary-700 ring-1 ring-inset ring-primary-700/10">{{ ucfirst($user->role) }}</span>
+                                            class="inline-flex items-center rounded-md bg-primary-50 dark:bg-primary-900/20 px-2 py-1 text-xs font-medium text-primary-700 dark:text-primary-400 ring-1 ring-inset ring-primary-700/10 dark:ring-primary-400/20">{{ ucfirst($user->role) }}</span>
+                                    </td>
+                                    <td class="whitespace-nowrap px-3 py-4 text-sm">
+                                        @if($user->force_password_change)
+                                            <span class="inline-flex items-center gap-1 rounded-md bg-amber-50 dark:bg-amber-900/20 px-2 py-1 text-xs font-medium text-amber-700 dark:text-amber-400 ring-1 ring-inset ring-amber-600/20">
+                                                <i class='bx bx-lock-alt'></i> Force Change
+                                            </span>
+                                        @else
+                                            <span class="inline-flex items-center gap-1 rounded-md bg-green-50 dark:bg-green-900/20 px-2 py-1 text-xs font-medium text-green-700 dark:text-green-400 ring-1 ring-inset ring-green-600/20">
+                                                <i class='bx bx-check'></i> Updated
+                                            </span>
+                                        @endif
                                     </td>
                                     <td
                                         class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                                         <div class="flex items-center justify-end gap-2">
+                                            @if(in_array(auth()->user()->role, ['superadmin', 'admin']))
+                                                <form action="{{ route('users.toggle-force-password', $user) }}" method="POST" class="inline-block">
+                                                    @csrf
+                                                    <button type="submit"
+                                                        class="text-amber-600 hover:text-amber-900 dark:text-amber-400 dark:hover:text-amber-300 transition-colors"
+                                                        title="{{ $user->force_password_change ? 'Disable force password change' : 'Force password change on next login' }}"
+                                                        onclick="return confirm('{{ $user->force_password_change ? 'Disable force password change?' : 'Force user to change password on next login?' }}')">
+                                                        <i class='bx bx-key text-xl'></i><span class="sr-only">Toggle Force Password, {{ $user->name }}</span>
+                                                    </button>
+                                                </form>
+                                            @endif
                                             <a href="{{ route('users.show', $user) }}"
                                                 class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 transition-colors">
                                                 <i class='bx bx-show text-xl'></i><span class="sr-only">View,

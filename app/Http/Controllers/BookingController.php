@@ -5,20 +5,19 @@ namespace App\Http\Controllers;
 use App\Models\Customer;
 use App\Models\Order;
 use App\Models\Vehicle;
-use App\Models\User;
+use App\Services\NotificationService;
+use App\Services\PricingService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Auth;
 
 class BookingController extends Controller
 {
-    public function store(Request $request)
+    public function store(Request $request, PricingService $pricing, NotificationService $notifications)
     {
         $validated = $request->validate([
-            // Trip Details
             'pickup_address' => 'required|string',
             'dropoff_address' => 'required|string',
             'pickup_latitude' => 'required|numeric',
@@ -27,16 +26,10 @@ class BookingController extends Controller
             'dropoff_longitude' => 'required|numeric',
             'distance_km' => 'required|numeric',
             'base_price' => 'required|numeric',
-
-            // Vehicle
             'vehicle_id' => 'required|exists:vehicles,id',
-
-            // Customer Details
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'phone' => 'required|string|max:20',
-
-            // Schedule
             'date' => 'required|date',
             'time' => 'required',
             'flight_number' => 'nullable|string|max:50',
@@ -46,46 +39,36 @@ class BookingController extends Controller
         try {
             DB::beginTransaction();
 
-            // 1. Handle Customer
             $customer = null;
-            if (Auth::check()) {
-                // If logged in, check if user has a customer profile, or find by email
+            if (Auth::guard('customer')->check()) {
+                $customer = Auth::guard('customer')->user();
+            } elseif (Auth::check()) {
                 $user = Auth::user();
                 $customer = Customer::where('email', $user->email)->first();
-
                 if (!$customer) {
                     $customer = Customer::create([
                         'name' => $user->name,
                         'email' => $user->email,
-                        'phone' => $validated['phone'], // Use phone from form
+                        'phone' => $validated['phone'],
+                        'password' => Hash::make('P@ssw0rd123'),
                     ]);
                 }
             } else {
-                // Guest: Use provided email
                 $customer = Customer::firstOrCreate(
                     ['email' => $validated['email']],
                     [
                         'name' => $validated['name'],
                         'phone' => $validated['phone'],
+                        'password' => Hash::make('P@ssw0rd123'),
                     ]
                 );
             }
 
-            // 2. Calculate Final Price on Backend (Security)
             $vehicle = Vehicle::findOrFail($validated['vehicle_id']);
             $distanceKm = $validated['distance_km'];
 
-            // Re-calculate base price to prevent tampering
-            $serverBasePrice = 0;
-            if ($distanceKm <= 60) {
-                $serverBasePrice = $distanceKm * 2.50;
-            } else {
-                $serverBasePrice = (60 * 2.50) + (($distanceKm - 60) * 1.20);
-            }
+            $finalPrice = $pricing->calculatePrice($distanceKm, $vehicle->price_multiplier);
 
-            $finalPrice = $serverBasePrice * $vehicle->price_multiplier;
-
-            // 3. Create Order
             $scheduledAt = Carbon::parse($validated['date'] . ' ' . $validated['time']);
 
             $order = Order::create([
@@ -102,12 +85,17 @@ class BookingController extends Controller
                 'total_price' => $finalPrice,
                 'status' => 'pending',
                 'scheduled_at' => $scheduledAt,
-                // We'll store flight/remarks in a metadata column if available, 
-                // or add them to the migration if needed. For now let's assume standard fields.
-                // If Order model doesn't have remarks, we might skip it or add column.
-                // Checking previous Order model view... it didn't have remarks.
-                // Let's add remarks and flight_number to schema later if needed.
+                'flight_number' => $validated['flight_number'] ?? null,
+                'remarks' => $validated['remarks'] ?? null,
             ]);
+
+            $order->load(['customer', 'vehicle.driver']);
+
+            $notifications->sendBookingConfirmation($order);
+
+            if ($order->vehicle && $order->vehicle->driver) {
+                $notifications->sendDriverAssignment($order);
+            }
 
             DB::commit();
 

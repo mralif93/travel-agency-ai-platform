@@ -175,4 +175,34 @@ class UserController extends Controller
 
         return redirect()->route('users.index')->with('success', 'User deleted successfully.');
     }
+
+    public function toggleForcePasswordChange(User $user)
+    {
+        if (!in_array(auth()->user()->role, ['superadmin', 'admin'])) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $user->force_password_change = !$user->force_password_change;
+        $user->save();
+
+        $status = $user->force_password_change ? 'enabled' : 'disabled';
+        return back()->with('success', "Force password change {$status} for {$user->name}.");
+    }
+
+    public function resetPassword(Request $request, User $user)
+    {
+        if (!in_array(auth()->user()->role, ['superadmin', 'admin'])) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $request->validate([
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        $user->password = Hash::make($request->password);
+        $user->force_password_change = true;
+        $user->save();
+
+        return back()->with('success', "Password reset for {$user->name}. User must change password on next login.");
+    }
 }

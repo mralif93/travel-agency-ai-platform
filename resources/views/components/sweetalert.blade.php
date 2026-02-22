@@ -1,18 +1,19 @@
 @if (session('success') || session('error') || session('status'))
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const Toast = Swal.mixin({
+        document.addEventListener('DOMContentLoaded', function() {
+            var isDark = document.documentElement.classList.contains('dark');
+            var Toast = Swal.mixin({
                 toast: true,
                 position: 'top-end',
                 showConfirmButton: false,
                 timer: 3000,
                 timerProgressBar: true,
-                didOpen: (toast) => {
-                    toast.addEventListener('mouseenter', Swal.stopTimer)
-                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                didOpen: function(toast) {
+                    toast.addEventListener('mouseenter', Swal.stopTimer);
+                    toast.addEventListener('mouseleave', Swal.resumeTimer);
                 },
-                background: document.documentElement.classList.contains('dark') ? '#1f2937' : '#fff',
-                color: document.documentElement.classList.contains('dark') ? '#fff' : '#1f2937'
+                background: isDark ? '#1f2937' : '#fff',
+                color: isDark ? '#f3f4f6' : '#1f2937'
             });
 
             @if (session('success'))
@@ -30,22 +31,43 @@
             @endif
 
             @if (session('status'))
-                // Handle specific status messages if needed, or default to success
-                // Example: 'profile-updated'
                 @if (session('status') === 'profile-updated')
-                    Swal.fire({ // Use a central popup for profile updates as per previous design
+                    Swal.fire({
                         icon: 'success',
                         title: 'Saved!',
                         text: 'Your profile has been updated.',
                         timer: 2000,
                         showConfirmButton: false,
-                        background: document.documentElement.classList.contains('dark') ? '#1f2937' : '#fff',
-                        color: document.documentElement.classList.contains('dark') ? '#fff' : '#1f2937'
+                        background: isDark ? '#1f2937' : '#fff',
+                        color: isDark ? '#f3f4f6' : '#1f2937',
+                        width: '350px'
+                    });
+                @elseif (session('status') === 'settings-updated')
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Saved!',
+                        text: 'Your settings have been updated.',
+                        timer: 2000,
+                        showConfirmButton: false,
+                        background: isDark ? '#1f2937' : '#fff',
+                        color: isDark ? '#f3f4f6' : '#1f2937',
+                        width: '350px'
+                    });
+                @elseif (session('status') === 'password-changed')
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Password Updated!',
+                        text: 'Your password has been changed successfully.',
+                        timer: 2000,
+                        showConfirmButton: false,
+                        background: isDark ? '#1f2937' : '#fff',
+                        color: isDark ? '#f3f4f6' : '#1f2937',
+                        width: '350px'
                     });
                 @elseif (session('status') === 'verification-link-sent')
                     Toast.fire({
                         icon: 'success',
-                        title: 'A new verification link has been sent to the email address you provided during registration.'
+                        title: 'A new verification link has been sent to your email address.'
                     });
                 @else
                     Toast.fire({
@@ -54,6 +76,6 @@
                     });
                 @endif
             @endif
-            });
+        });
     </script>
 @endif

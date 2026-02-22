@@ -8,12 +8,8 @@ use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        // 1. Super Admin
         User::firstOrCreate(
             ['email' => 'superadmin@example.com'],
             [
@@ -21,10 +17,10 @@ class UserSeeder extends Seeder
                 'password' => Hash::make('password'),
                 'role' => 'superadmin',
                 'theme_color' => 'primary',
+                'force_password_change' => false,
             ]
         );
 
-        // 2. Admins (3)
         for ($i = 1; $i <= 3; $i++) {
             User::firstOrCreate(
                 ['email' => "admin{$i}@example.com"],
@@ -33,11 +29,11 @@ class UserSeeder extends Seeder
                     'password' => Hash::make('password'),
                     'role' => 'admin',
                     'theme_color' => 'primary',
+                    'force_password_change' => false,
                 ]
             );
         }
 
-        // 3. Companies (5)
         for ($i = 1; $i <= 5; $i++) {
             $company = \App\Models\Company::create([
                 'name' => "Company {$i}",
@@ -48,39 +44,45 @@ class UserSeeder extends Seeder
                 'phone' => '+6012345678' . $i,
             ]);
 
-            // 3a. Company User (1 per company)
-            User::create([
-                'name' => "Company Manager {$i}",
-                'email' => "manager{$i}@company{$i}.com",
-                'password' => Hash::make('password'),
-                'role' => 'company',
-                'theme_color' => 'primary',
-                'company_id' => $company->id,
-            ]);
-
-            // 3b. Drivers for this Company (5 per company)
-            for ($j = 1; $j <= 5; $j++) {
-                User::create([
-                    'name' => "Company {$i} Driver {$j}",
-                    'email' => "driver{$j}@company{$i}.com",
+            User::firstOrCreate(
+                ['email' => "manager{$i}@company{$i}.com"],
+                [
+                    'name' => "Company Manager {$i}",
                     'password' => Hash::make('password'),
-                    'role' => 'driver',
+                    'role' => 'company',
                     'theme_color' => 'primary',
                     'company_id' => $company->id,
-                ]);
+                    'force_password_change' => true,
+                ]
+            );
+
+            for ($j = 1; $j <= 5; $j++) {
+                User::firstOrCreate(
+                    ['email' => "driver{$j}@company{$i}.com"],
+                    [
+                        'name' => "Company {$i} Driver {$j}",
+                        'password' => Hash::make('password'),
+                        'role' => 'driver',
+                        'theme_color' => 'primary',
+                        'company_id' => $company->id,
+                        'force_password_change' => true,
+                    ]
+                );
             }
         }
 
-        // 4. Freelance Drivers (5) - No Company
         for ($k = 1; $k <= 5; $k++) {
-            User::create([
-                'name' => "Freelance Driver {$k}",
-                'email' => "freelance_driver{$k}@example.com",
-                'password' => Hash::make('password'),
-                'role' => 'driver',
-                'theme_color' => 'primary',
-                'company_id' => null,
-            ]);
+            User::firstOrCreate(
+                ['email' => "freelance_driver{$k}@example.com"],
+                [
+                    'name' => "Freelance Driver {$k}",
+                    'password' => Hash::make('password'),
+                    'role' => 'driver',
+                    'theme_color' => 'primary',
+                    'company_id' => null,
+                    'force_password_change' => true,
+                ]
+            );
         }
     }
 }

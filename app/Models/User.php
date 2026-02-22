@@ -25,6 +25,9 @@ class User extends Authenticatable
         'company_id',
         'theme_mode',
         'theme_color',
+        'force_password_change',
+        'rating',
+        'rating_count',
     ];
 
     /**
@@ -47,6 +50,8 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'rating' => 'decimal:2',
+            'force_password_change' => 'boolean',
         ];
     }
 

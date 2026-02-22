@@ -48,9 +48,12 @@ class CustomerController extends Controller
             'address' => 'nullable|string|max:1000',
         ]);
 
+        $validated['password'] = \Illuminate\Support\Facades\Hash::make('password');
+        $validated['force_password_change'] = true;
+
         Customer::create($validated);
 
-        return redirect()->route('customers.index')->with('success', 'Customer created successfully.');
+        return redirect()->route('customers.index')->with('success', 'Customer created successfully. Default password: password');
     }
 
     /**
@@ -102,9 +105,23 @@ class CustomerController extends Controller
     public function resetPassword(Customer $customer)
     {
         $customer->update([
-            'password' => \Illuminate\Support\Facades\Hash::make('P@ssw0rd123'),
+            'password' => \Illuminate\Support\Facades\Hash::make('password'),
+            'force_password_change' => true,
         ]);
 
-        return back()->with('success', 'Password has been reset to default: P@ssw0rd123');
+        return back()->with('success', 'Password has been reset to default: password. Customer must change password on next login.');
+    }
+
+    public function toggleForcePasswordChange(Customer $customer)
+    {
+        if (!in_array(auth()->user()->role, ['superadmin', 'admin'])) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $customer->force_password_change = !$customer->force_password_change;
+        $customer->save();
+
+        $status = $customer->force_password_change ? 'enabled' : 'disabled';
+        return back()->with('success', "Force password change {$status} for {$customer->name}.");
     }
 }

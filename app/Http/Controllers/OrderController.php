@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Services\NotificationService;
+use App\Services\PricingService;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
@@ -185,36 +187,39 @@ class OrderController extends Controller
         $order->delete();
         return redirect()->route('orders.index')->with('success', 'Order deleted successfully.');
     }
-    public function verify(Request $request, Order $order)
+    public function verify(Request $request, Order $order, NotificationService $notifications)
     {
         if ($order->vehicle->driver_id !== $request->user()->id) {
             return response()->json(['success' => false, 'message' => 'Unauthorized driver'], 403);
         }
 
-        // Allow starting the trip if it's pending or scheduled
+        $previousStatus = $order->status;
+
         if (in_array($order->status, ['pending', 'scheduled'])) {
-            $order->update(['status' => 'active']); // 'active' means in_progress/started
+            $order->update(['status' => 'active']);
+
+            $order->load(['customer', 'vehicle.driver']);
+            $notifications->sendOrderStatusUpdate($order, $previousStatus);
+
             return response()->json(['success' => true, 'message' => 'Trip started!', 'status' => 'active']);
 
         } elseif ($order->status === 'active') {
             $order->update(['status' => 'completed']);
 
-            // Auto-generate Invoice
             $driver = $order->vehicle->driver;
-            // Check if driver belongs to a company (B2B invoice) or is independent/platform
-            // For now, we assume current requirement is: invoice for every trip.
 
             \App\Models\Invoice::create([
                 'order_id' => $order->id,
-                'company_id' => $driver->company_id ?? null, // Nullable if driver has no company? Or assume company exists.
-                // If company_id is required by schema, this might fail for independent drivers. 
-                // Assuming for this project scope, all drivers belong to a company as per earlier context.
+                'company_id' => $driver->company_id ?? null,
                 'issue_date' => now(),
-                'due_date' => now(), // Immediate due
+                'due_date' => now(),
                 'description' => "Trip #TR-" . substr($order->id, 0, 8) . " - " . $order->pickup_address . " to " . $order->dropoff_address,
                 'amount' => $order->total_price,
                 'status' => 'paid',
             ]);
+
+            $order->load(['customer', 'vehicle.driver']);
+            $notifications->sendOrderStatusUpdate($order, $previousStatus);
 
             return response()->json(['success' => true, 'message' => 'Trip completed & Invoice generated!', 'status' => 'completed']);
         }

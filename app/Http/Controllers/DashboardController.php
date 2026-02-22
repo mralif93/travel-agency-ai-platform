@@ -2,12 +2,81 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Customer;
 use App\Models\Order;
+use App\Models\User;
+use App\Models\Vehicle;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
+    public function superadmin()
+    {
+        $totalUsers = User::count();
+        $totalCustomers = Customer::count();
+        $newSignups24h = User::where('created_at', '>=', now()->subDay())->count() +
+                         Customer::where('created_at', '>=', now()->subDay())->count();
+        $totalOrders = Order::count();
+        $totalRevenue = Order::where('status', 'completed')->sum('total_price');
+
+        $recentActivity = Order::with(['customer', 'vehicle.driver'])
+            ->latest()
+            ->take(10)
+            ->get()
+            ->map(function ($order) {
+                $action = match($order->status) {
+                    'pending' => 'New booking created',
+                    'active' => 'Trip in progress',
+                    'completed' => 'Completed trip',
+                    'cancelled' => 'Cancelled booking',
+                    default => 'Order updated',
+                };
+                return (object)[
+                    'id' => $order->id,
+                    'user' => $order->customer?->name ?? 'Guest',
+                    'action' => $action,
+                    'time' => $order->updated_at->diffForHumans(),
+                    'order' => $order,
+                ];
+            });
+
+        return view('dashboard.superadmin', compact(
+            'totalUsers',
+            'totalCustomers',
+            'newSignups24h',
+            'totalOrders',
+            'totalRevenue',
+            'recentActivity'
+        ));
+    }
+
+    public function admin()
+    {
+        $totalBookings = Order::count();
+        $revenueToday = Order::where('status', 'completed')
+            ->whereDate('updated_at', today())
+            ->sum('total_price');
+        $totalDrivers = User::where('role', 'driver')->count();
+        $activeDrivers = Vehicle::where('status', 'available')
+            ->whereHas('driver', fn($q) => $q->where('role', 'driver'))
+            ->count();
+        $pendingReview = Order::where('status', 'pending')->count();
+
+        $recentBookings = Order::with(['customer', 'vehicle'])
+            ->latest()
+            ->take(5)
+            ->get();
+
+        return view('dashboard.admin', compact(
+            'totalBookings',
+            'revenueToday',
+            'totalDrivers',
+            'activeDrivers',
+            'pendingReview',
+            'recentBookings'
+        ));
+    }
     public function company()
     {
         $companyId = Auth::user()->company_id;
@@ -75,8 +144,7 @@ class DashboardController extends Controller
 
         $totalOrders = Order::whereIn('vehicle_id', $driverVehicleIds)->count();
 
-        // Rating: Mocked for now, or add rating column to users/orders later
-        $rating = 4.9;
+        $rating = $user->rating ?? 5.0;
 
         // Schedule / Trips
         // Fetch Today's assignments, Active trips, and Pending (New)
@@ -115,13 +183,18 @@ class DashboardController extends Controller
         return view('dashboard.customer', compact('user', 'pendingOrders', 'completedOrders', 'totalSpent', 'orders'));
     }
 
-    public function trips()
+    public function trips(Request $request)
     {
         $user = Auth::guard('customer')->user();
 
-        $trips = Order::where('customer_id', $user->id)
-            ->with(['vehicle', 'invoice'])
-            ->latest()
+        $query = Order::where('customer_id', $user->id)
+            ->with(['vehicle', 'invoice']);
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $trips = $query->orderBy('scheduled_at', 'desc')
             ->paginate(10);
 
         return view('dashboard.trips', compact('user', 'trips'));
